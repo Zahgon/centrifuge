@@ -18,53 +18,37 @@ type http2Stream struct {
 	rc *http.ResponseController
 }
 
-func (s *http2Stream) Read(p []byte) (int, error) {
-	return s.ReadCloser.Read(p)
-}
+func (s *http2Stream) Read(p []byte) (int, error) { _ = "STUB: not implemented"; return 0, nil }
 
-func (s *http2Stream) Write(p []byte) (int, error) {
-	n, err := s.Writer.Write(p)
-	if err != nil {
-		return n, err
-	}
-	err = s.rc.Flush()
-	return n, err
-}
+func (s *http2Stream) Write(p []byte) (int, error) { _ = "STUB: not implemented"; return 0, nil }
 
-func (s *http2Stream) Flush() error {
-	return s.rc.Flush()
-}
+func (s *http2Stream) Flush() error { _ = "STUB: not implemented"; return nil }
 
-func (s *http2Stream) Close() error {
-	return s.ReadCloser.Close()
-}
+func (s *http2Stream) Close() error { _ = "STUB: not implemented"; return nil }
 
 // LocalAddr is not implemented for HTTP/2 streams.
 // May be taken from request if needed.
 func (s *http2Stream) LocalAddr() net.Addr {
-	return &net.TCPAddr{}
+	_ = "STUB: not implemented"
+	return *
+
+	// RemoteAddr is not implemented for HTTP/2 streams.
+	// May be taken from request if needed.
+	new(net.Addr)
 }
 
-// RemoteAddr is not implemented for HTTP/2 streams.
-// May be taken from request if needed.
 func (s *http2Stream) RemoteAddr() net.Addr {
-	return &net.TCPAddr{}
+	_ = "STUB: not implemented"
+	return *
+
+	// SetDeadline ...
+	new(net.Addr)
 }
 
-// SetDeadline ...
-func (s *http2Stream) SetDeadline(t time.Time) error {
-	if err := s.rc.SetWriteDeadline(t); err != nil {
-		return err
-	}
-	return s.rc.SetReadDeadline(t)
-}
+func (s *http2Stream) SetDeadline(t time.Time) error { _ = "STUB: not implemented"; return nil }
 
 // SetReadDeadline ...
-func (s *http2Stream) SetReadDeadline(t time.Time) error {
-	return s.rc.SetReadDeadline(t)
-}
+func (s *http2Stream) SetReadDeadline(t time.Time) error { _ = "STUB: not implemented"; return nil }
 
 // SetWriteDeadline ...
-func (s *http2Stream) SetWriteDeadline(t time.Time) error {
-	return s.rc.SetWriteDeadline(t)
-}
+func (s *http2Stream) SetWriteDeadline(t time.Time) error { _ = "STUB: not implemented"; return nil }

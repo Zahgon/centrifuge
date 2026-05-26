@@ -2,12 +2,9 @@ package jwt
 
 import (
 	"crypto/rsa"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"sync"
-	"time"
 
 	"github.com/cristalhq/jwt/v5"
 )
@@ -59,13 +56,8 @@ type TokenVerifierConfig struct {
 }
 
 func NewTokenVerifier(config TokenVerifierConfig) *TokenVerifier {
-	verifier := &TokenVerifier{}
-	algorithms, err := newAlgorithms(config.HMACSecretKey, config.RSAPublicKey)
-	if err != nil {
-		panic(err)
-	}
-	verifier.algorithms = algorithms
-	return verifier
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type TokenVerifier struct {
@@ -105,207 +97,40 @@ type algorithms struct {
 }
 
 func newAlgorithms(tokenHMACSecretKey string, pubKey *rsa.PublicKey) (*algorithms, error) {
-	alg := &algorithms{}
+	_ = "STUB: not implemented"
+	return nil,
 
-	// HMAC SHA.
-	if tokenHMACSecretKey != "" {
-		verifierHS256, err := jwt.NewVerifierHS(jwt.HS256, []byte(tokenHMACSecretKey))
-		if err != nil {
-			return nil, err
-		}
-		verifierHS384, err := jwt.NewVerifierHS(jwt.HS384, []byte(tokenHMACSecretKey))
-		if err != nil {
-			return nil, err
-		}
-		verifierHS512, err := jwt.NewVerifierHS(jwt.HS512, []byte(tokenHMACSecretKey))
-		if err != nil {
-			return nil, err
-		}
-		alg.HS256 = verifierHS256
-		alg.HS384 = verifierHS384
-		alg.HS512 = verifierHS512
-	}
-
-	// RSA.
-	if pubKey != nil {
-		verifierRS256, err := jwt.NewVerifierRS(jwt.RS256, pubKey)
-		if err != nil {
-			return nil, err
-		}
-		verifierRS384, err := jwt.NewVerifierRS(jwt.RS384, pubKey)
-		if err != nil {
-			return nil, err
-		}
-		verifierRS512, err := jwt.NewVerifierRS(jwt.RS512, pubKey)
-		if err != nil {
-			return nil, err
-		}
-		alg.RS256 = verifierRS256
-		alg.RS384 = verifierRS384
-		alg.RS512 = verifierRS512
-	}
-
-	return alg, nil
+		// HMAC SHA.
+		nil
 }
 
+// RSA.
+
 func (verifier *TokenVerifier) verifySignature(token *jwt.Token) error {
-	verifier.mu.RLock()
-	defer verifier.mu.RUnlock()
-
-	var verifierFunc jwt.Verifier
-	switch token.Header().Algorithm {
-	case jwt.HS256:
-		verifierFunc = verifier.algorithms.HS256
-	case jwt.HS384:
-		verifierFunc = verifier.algorithms.HS384
-	case jwt.HS512:
-		verifierFunc = verifier.algorithms.HS512
-	case jwt.RS256:
-		verifierFunc = verifier.algorithms.RS256
-	case jwt.RS384:
-		verifierFunc = verifier.algorithms.RS384
-	case jwt.RS512:
-		verifierFunc = verifier.algorithms.RS512
-	default:
-		return fmt.Errorf("%w: %s", errUnsupportedAlgorithm, string(token.Header().Algorithm))
-	}
-
-	if verifierFunc == nil {
-		return fmt.Errorf("%w: %s", errDisabledAlgorithm, string(token.Header().Algorithm))
-	}
-
-	return verifierFunc.Verify(token)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (verifier *TokenVerifier) VerifyConnectToken(t string) (ConnectToken, error) {
-	token, err := jwt.ParseNoVerify([]byte(t))
-	if err != nil {
-		return ConnectToken{}, fmt.Errorf("error parsing connect token: %w", err)
-	}
-
-	err = verifier.verifySignature(token)
-	if err != nil {
-		return ConnectToken{}, fmt.Errorf("error verifying connect token signature: %w", err)
-	}
-
-	token, err = jwt.Parse([]byte(t), verifier.selectVerifier(token.Header().Algorithm))
-	if err != nil {
-		return ConnectToken{}, fmt.Errorf("error verifying connect token: %w", err)
-	}
-
-	claims := &connectTokenClaims{}
-	err = json.Unmarshal(token.Claims(), claims)
-	if err != nil {
-		return ConnectToken{}, fmt.Errorf("error unmarshalling connect token claims: %w", err)
-	}
-
-	now := time.Now()
-	if !claims.IsValidExpiresAt(now) {
-		return ConnectToken{}, ErrTokenExpired
-	}
-	if !claims.IsValidNotBefore(now) {
-		return ConnectToken{}, errors.New("token not valid yet")
-	}
-
-	ct := ConnectToken{
-		UserID:   claims.RegisteredClaims.Subject,
-		Info:     claims.Info,
-		Channels: claims.Channels,
-	}
-	if claims.ExpiresAt != nil {
-		ct.ExpireAt = claims.ExpiresAt.Unix()
-	}
-	if claims.Base64Info != "" {
-		byteInfo, err := base64.StdEncoding.DecodeString(claims.Base64Info)
-		if err != nil {
-			return ConnectToken{}, fmt.Errorf("error decoding base64 info in connect token: %w", err)
-		}
-		ct.Info = byteInfo
-	}
-	return ct, nil
+	_ = "STUB: not implemented"
+	return *new(ConnectToken), nil
 }
 
 func (verifier *TokenVerifier) selectVerifier(alg jwt.Algorithm) jwt.Verifier {
-	verifier.mu.RLock()
-	defer verifier.mu.RUnlock()
-
-	switch alg {
-	case jwt.HS256:
-		return verifier.algorithms.HS256
-	case jwt.HS384:
-		return verifier.algorithms.HS384
-	case jwt.HS512:
-		return verifier.algorithms.HS512
-	case jwt.RS256:
-		return verifier.algorithms.RS256
-	case jwt.RS384:
-		return verifier.algorithms.RS384
-	case jwt.RS512:
-		return verifier.algorithms.RS512
-	default:
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return *new(jwt.Verifier)
 }
 
 func (verifier *TokenVerifier) VerifySubscribeToken(t string) (SubscribeToken, error) {
-	token, err := jwt.ParseNoVerify([]byte(t))
-	if err != nil {
-		return SubscribeToken{}, err
-	}
-
-	err = verifier.verifySignature(token)
-	if err != nil {
-		return SubscribeToken{}, err
-	}
-
-	token, err = jwt.Parse([]byte(t), verifier.selectVerifier(token.Header().Algorithm))
-	if err != nil {
-		return SubscribeToken{}, fmt.Errorf("error verifying subscribe token: %w", err)
-	}
-
-	claims := &subscribeTokenClaims{}
-	err = json.Unmarshal(token.Claims(), claims)
-	if err != nil {
-		return SubscribeToken{}, err
-	}
-
-	now := time.Now()
-	if !claims.IsValidExpiresAt(now) {
-		return SubscribeToken{}, ErrTokenExpired
-	}
-	if !claims.IsValidNotBefore(now) {
-		return SubscribeToken{}, errors.New("token not valid yet")
-	}
-
-	st := SubscribeToken{
-		Client:          claims.Client,
-		Channel:         claims.Channel,
-		ExpireAt:        claims.ExpiresAt.Unix(),
-		ExpireTokenOnly: claims.ExpireTokenOnly,
-	}
-
-	// Decode the Info field if it's present
-	if len(claims.Info) > 0 {
-		st.Info = claims.Info
-	} else if claims.Base64Info != "" {
-		// If Info is not present, but Base64Info is, decode it
-		byteInfo, err := base64.StdEncoding.DecodeString(claims.Base64Info)
-		if err != nil {
-			return SubscribeToken{}, fmt.Errorf("error decoding base64 info in subscribe token: %w", err)
-		}
-		st.Info = byteInfo
-	}
-
-	return st, nil
+	_ = "STUB: not implemented"
+	return *new(SubscribeToken), nil
 }
 
+// Decode the Info field if it's present
+
+// If Info is not present, but Base64Info is, decode it
+
 func (verifier *TokenVerifier) Reload(config TokenVerifierConfig) error {
-	verifier.mu.Lock()
-	defer verifier.mu.Unlock()
-	alg, err := newAlgorithms(config.HMACSecretKey, config.RSAPublicKey)
-	if err != nil {
-		return err
-	}
-	verifier.algorithms = alg
+	_ = "STUB: not implemented"
 	return nil
 }

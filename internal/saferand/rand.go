@@ -15,20 +15,10 @@ type Rand struct {
 	r  *rand.Rand
 }
 
-func New(seed int64) *Rand {
-	return &Rand{r: rand.New(rand.NewSource(seed))} //nolint:gosec // Not used for security-sensitive purposes.
-}
+func New(seed int64) *Rand { _ = "STUB: not implemented"; return nil }
 
-func (sr *Rand) Int63n(n int64) int64 {
-	sr.mu.Lock()
-	v := sr.r.Int63n(n)
-	sr.mu.Unlock()
-	return v
-}
+//nolint:gosec // Not used for security-sensitive purposes.
 
-func (sr *Rand) Intn(n int) int {
-	sr.mu.Lock()
-	v := sr.r.Intn(n)
-	sr.mu.Unlock()
-	return v
-}
+func (sr *Rand) Int63n(n int64) int64 { _ = "STUB: not implemented"; return 0 }
+
+func (sr *Rand) Intn(n int) int { _ = "STUB: not implemented"; return 0 }

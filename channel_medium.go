@@ -1,12 +1,8 @@
 package centrifuge
 
 import (
-	"errors"
-	"math"
 	"sync"
 	"time"
-
-	"github.com/centrifugal/centrifuge/internal/timers"
 )
 
 // ChannelMediumOptions is an EXPERIMENTAL way to enable using a channel medium layer in Centrifuge.
@@ -47,10 +43,7 @@ type ChannelMediumOptions struct {
 	broadcastDelay time.Duration
 }
 
-func (o ChannelMediumOptions) isMediumEnabled() bool {
-	return o.SharedPositionSync || o.KeepLatestPublication || o.enableQueue || o.broadcastDelay > 0
-}
-
+func (o ChannelMediumOptions) isMediumEnabled() bool { _ = "STUB: not implemented"; return false }
 
 // channelMedium is initialized when first subscriber comes into channel, and dropped as soon as last
 // subscriber leaves the channel on the Node.
@@ -84,22 +77,8 @@ type nodeSubset interface {
 }
 
 func newChannelMedium(channel string, node nodeSubset, options ChannelMediumOptions) (*channelMedium, error) {
-	if options.broadcastDelay > 0 && !options.enableQueue {
-		return nil, errors.New("broadcast delay can only be used with queue enabled")
-	}
-	c := &channelMedium{
-		channel: channel,
-		node:    node,
-		options: options,
-		closeCh: make(chan struct{}),
-		nowFn:   time.Now,
-	}
-	c.positionCheckTime = c.nowFn().UnixNano()
-	if options.enableQueue {
-		c.messages = newPublicationQueue(2)
-		go c.writer()
-	}
-	return c, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 type queuedPub struct {
@@ -113,184 +92,58 @@ type queuedPub struct {
 const defaultChannelLayerQueueMaxSize = 16 * 1024 * 1024
 
 func (c *channelMedium) broadcastPublication(pub *Publication, sp StreamPosition, delta bool, prevPub *Publication) {
-	bp := queuedPub{pub: pub, sp: sp, prevPub: prevPub, delta: delta}
-	c.mu.Lock()
-	c.positionCheckTime = c.nowFn().UnixNano()
-	c.mu.Unlock()
-
-	if c.options.enableQueue {
-		queueMaxSize := defaultChannelLayerQueueMaxSize
-		if c.options.queueMaxSize > 0 {
-			queueMaxSize = c.options.queueMaxSize
-		}
-		if c.messages.Size() > queueMaxSize {
-			return
-		}
-		c.messages.Add(queuedPublication{Publication: bp})
-	} else {
-		c.broadcastMu.Lock()
-		defer c.broadcastMu.Unlock()
-		c.broadcast(bp)
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
-func (c *channelMedium) broadcastInsufficientState() {
-	bp := queuedPub{prevPub: nil, isInsufficientState: true}
-	c.mu.Lock()
-	c.positionCheckTime = c.nowFn().UnixNano()
-	c.mu.Unlock()
-	if c.options.enableQueue {
-		// TODO: possibly support c.messages.dropQueued() for this path ?
-		c.messages.Add(queuedPublication{Publication: bp})
-	} else {
-		c.broadcastMu.Lock()
-		defer c.broadcastMu.Unlock()
-		c.broadcast(bp)
-	}
-}
+func (c *channelMedium) broadcastInsufficientState() { _ = "STUB: not implemented"; return }
 
-func (c *channelMedium) broadcast(qp queuedPub) {
-	pubToBroadcast := qp.pub
-	spToBroadcast := qp.sp
-	if qp.isInsufficientState {
-		// using math.MaxUint64 as a special offset to trigger insufficient state.
-		pubToBroadcast = &Publication{Offset: math.MaxUint64}
-		spToBroadcast.Offset = math.MaxUint64
-	}
+// TODO: possibly support c.messages.dropQueued() for this path ?
 
-	prevPub := qp.prevPub
-	var localPrevPub *Publication
-	useLocalLatestPub := c.options.KeepLatestPublication && !qp.isInsufficientState
-	if useLocalLatestPub && qp.delta && qp.pub.Key == "" {
-		// Only provide localPrevPub for non-map publications. For map subs,
-		// keys are independent streams — a single latestPublication can't serve
-		// as a correct delta base across different keys. Map subs rely on the
-		// broker-level prevPub (positioned path) for delta instead.
-		localPrevPub = c.latestPublication
-	}
-	if c.options.broadcastDelay > 0 && !c.options.KeepLatestPublication {
-		prevPub = nil
-	}
-	if qp.isInsufficientState {
-		prevPub = nil
-	}
-	_ = c.node.handlePublication(c.channel, spToBroadcast, pubToBroadcast, prevPub, localPrevPub)
-	if useLocalLatestPub && qp.pub.Key == "" {
-		c.latestPublication = qp.pub
-	}
-}
+func (c *channelMedium) broadcast(qp queuedPub) { _ = "STUB: not implemented"; return }
 
-func (c *channelMedium) writer() {
-	for {
-		if ok := c.waitSendPub(c.options.broadcastDelay); !ok {
-			return
-		}
-	}
-}
+// using math.MaxUint64 as a special offset to trigger insufficient state.
+
+// Only provide localPrevPub for non-map publications. For map subs,
+// keys are independent streams — a single latestPublication can't serve
+// as a correct delta base across different keys. Map subs rely on the
+// broker-level prevPub (positioned path) for delta instead.
+
+func (c *channelMedium) writer() { _ = "STUB: not implemented"; return }
 
 func (c *channelMedium) waitSendPub(delay time.Duration) bool {
+	_ = "STUB: not implemented"
 	// Wait for message from the queue.
-	ok := c.messages.Wait()
-	if !ok {
-		return false
-	}
-
-	if delay > 0 {
-		tm := timers.AcquireTimer(delay)
-		select {
-		case <-tm.C:
-		case <-c.closeCh:
-			timers.ReleaseTimer(tm)
-			return false
-		}
-		timers.ReleaseTimer(tm)
-	}
-
-	msg, ok := c.messages.Remove()
-	if !ok {
-		return !c.messages.Closed()
-	}
-	if delay == 0 || msg.Publication.isInsufficientState {
-		c.broadcast(msg.Publication)
-		return true
-	}
-	messageCount := c.messages.Len()
-	for messageCount > 0 {
-		messageCount--
-		var ok bool
-		msg, ok = c.messages.Remove()
-		if !ok {
-			if c.messages.Closed() {
-				return false
-			}
-			break
-		}
-		if msg.Publication.isInsufficientState {
-			break
-		}
-	}
-	c.broadcast(msg.Publication)
-	return true
+	return false
 }
 
 func (c *channelMedium) CheckPosition(historyMetaTTL time.Duration, clientPosition StreamPosition, checkDelay time.Duration) bool {
-	nowUnixNano := c.nowFn().UnixNano()
-	c.mu.Lock()
-	needCheckPosition := nowUnixNano-c.positionCheckTime >= checkDelay.Nanoseconds()
-	if needCheckPosition {
-		c.positionCheckTime = nowUnixNano
-	}
-	c.mu.Unlock()
-	if !needCheckPosition {
-		return true
-	}
-	_, validPosition, err := c.checkPositionWithRetry(historyMetaTTL, clientPosition)
-	if err != nil {
-		// Position will be checked again later.
-		return true
-	}
-	if !validPosition {
-		c.broadcastInsufficientState()
-	}
-	return validPosition
+	_ = "STUB: not implemented"
+	return false
 }
 
+// Position will be checked again later.
+
 func (c *channelMedium) checkPositionWithRetry(historyMetaTTL time.Duration, clientPosition StreamPosition) (StreamPosition, bool, error) {
-	sp, validPosition, err := c.checkPositionOnce(historyMetaTTL, clientPosition)
-	if err != nil || !validPosition {
-		return c.checkPositionOnce(historyMetaTTL, clientPosition)
-	}
-	return sp, validPosition, err
+	_ = "STUB: not implemented"
+	return *new(StreamPosition), false, nil
 }
 
 func (c *channelMedium) checkPositionOnce(historyMetaTTL time.Duration, clientPosition StreamPosition) (StreamPosition, bool, error) {
-	var streamTop StreamPosition
-	var err error
-	if c.isMap {
-		streamTop, err = c.node.mapStreamTop(c.channel)
-	} else {
-		streamTop, err = c.node.streamTop(c.channel, historyMetaTTL)
-	}
-	if err != nil {
-		return StreamPosition{}, false, err
-	}
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	isValidPosition := streamTop.Epoch == clientPosition.Epoch && clientPosition.Offset == streamTop.Offset
-	return streamTop, isValidPosition, nil
+	_ = "STUB: not implemented"
+	return *new(StreamPosition), false, nil
 }
 
 func (c *channelMedium) close() {
-	close(c.closeCh)
+	_ = "STUB: not implemented"
+
 	// Unblock the writer goroutine. publicationQueue.Wait sleeps on a
 	// sync.Cond and is woken only by an Add (cnt > 0) or Close (broadcast).
 	// closeCh is checked only inside the broadcastDelay timer branch, which
 	// is unreachable until Wait returns — so without closing the queue the
 	// writer goroutine sits forever on an empty channel and leaks for every
 	// channelMedium that ever existed.
-	if c.messages != nil {
-		c.messages.Close()
-	}
+	return
 }
 
 type queuedPublication struct {
@@ -314,131 +167,46 @@ type publicationQueue struct {
 
 // newPublicationQueue returns a new queuedPublication queue with initial capacity.
 func newPublicationQueue(initialCapacity int) *publicationQueue {
-	sq := &publicationQueue{
-		initCap: initialCapacity,
-		nodes:   make([]queuedPublication, initialCapacity),
-	}
-	sq.cond = sync.NewCond(&sq.mu)
-	return sq
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Mutex must be held when calling.
-func (q *publicationQueue) resize(n int) {
-	nodes := make([]queuedPublication, n)
-	if q.head < q.tail {
-		copy(nodes, q.nodes[q.head:q.tail])
-	} else {
-		copy(nodes, q.nodes[q.head:])
-		copy(nodes[len(q.nodes)-q.head:], q.nodes[:q.tail])
-	}
-
-	q.tail = q.cnt % n
-	q.head = 0
-	q.nodes = nodes
-}
+func (q *publicationQueue) resize(n int) { _ = "STUB: not implemented"; return }
 
 // Add an queuedPublication to the back of the queue
 // will return false if the queue is closed.
 // In that case the queuedPublication is dropped.
-func (q *publicationQueue) Add(i queuedPublication) bool {
-	q.mu.Lock()
-	if q.closed {
-		q.mu.Unlock()
-		return false
-	}
-	if q.cnt == len(q.nodes) {
-		// Also tested a growth rate of 1.5, see: http://stackoverflow.com/questions/2269063/buffer-growth-strategy
-		// In Go this resulted in a higher memory usage.
-		q.resize(q.cnt * 2)
-	}
-	q.nodes[q.tail] = i
-	q.tail = (q.tail + 1) % len(q.nodes)
-	if i.Publication.pub != nil {
-		q.size += len(i.Publication.pub.Data)
-	}
-	q.cnt++
-	q.cond.Signal()
-	q.mu.Unlock()
-	return true
-}
+func (q *publicationQueue) Add(i queuedPublication) bool { _ = "STUB: not implemented"; return false }
+
+// Also tested a growth rate of 1.5, see: http://stackoverflow.com/questions/2269063/buffer-growth-strategy
+// In Go this resulted in a higher memory usage.
 
 // Close the queue and discard all entries in the queue
 // all goroutines in wait() will return
-func (q *publicationQueue) Close() {
-	q.mu.Lock()
-	defer q.mu.Unlock()
-	q.closed = true
-	q.cnt = 0
-	q.nodes = nil
-	q.size = 0
-	q.cond.Broadcast()
-}
+func (q *publicationQueue) Close() { _ = "STUB: not implemented"; return }
 
 // Closed returns true if the queue has been closed
 // The call cannot guarantee that the queue hasn't been
 // closed while the function returns, so only "true" has a definite meaning.
-func (q *publicationQueue) Closed() bool {
-	q.mu.RLock()
-	c := q.closed
-	q.mu.RUnlock()
-	return c
-}
+func (q *publicationQueue) Closed() bool { _ = "STUB: not implemented"; return false }
 
 // Wait for a message to be added.
 // If there are items on the queue will return immediately.
 // Will return false if the queue is closed.
 // Otherwise, returns true.
-func (q *publicationQueue) Wait() bool {
-	q.mu.Lock()
-	if q.closed {
-		q.mu.Unlock()
-		return false
-	}
-	if q.cnt != 0 {
-		q.mu.Unlock()
-		return true
-	}
-	q.cond.Wait()
-	q.mu.Unlock()
-	return true
-}
+func (q *publicationQueue) Wait() bool { _ = "STUB: not implemented"; return false }
 
 // Remove will remove an queuedPublication from the queue.
 // If false is returned, it either means 1) there were no items on the queue
 // or 2) the queue is closed.
 func (q *publicationQueue) Remove() (queuedPublication, bool) {
-	q.mu.Lock()
-	if q.cnt == 0 {
-		q.mu.Unlock()
-		return queuedPublication{}, false
-	}
-	i := q.nodes[q.head]
-	q.head = (q.head + 1) % len(q.nodes)
-	q.cnt--
-	if i.Publication.pub != nil {
-		q.size -= len(i.Publication.pub.Data)
-	}
-
-	if n := len(q.nodes) / 2; n >= q.initCap && q.cnt <= n {
-		q.resize(n)
-	}
-
-	q.mu.Unlock()
-	return i, true
+	_ = "STUB: not implemented"
+	return *new(queuedPublication), false
 }
 
 // Len returns the current length of the queue.
-func (q *publicationQueue) Len() int {
-	q.mu.RLock()
-	l := q.cnt
-	q.mu.RUnlock()
-	return l
-}
+func (q *publicationQueue) Len() int { _ = "STUB: not implemented"; return 0 }
 
 // Size returns the current size of the queue.
-func (q *publicationQueue) Size() int {
-	q.mu.RLock()
-	s := q.size
-	q.mu.RUnlock()
-	return s
-}
+func (q *publicationQueue) Size() int { _ = "STUB: not implemented"; return 0 }

@@ -7,9 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/signal"
 	"strconv"
-	"syscall"
 	"time"
 
 	"github.com/centrifugal/centrifuge"
@@ -29,42 +27,14 @@ type clientMessage struct {
 	InstanceName string `json:"instance,omitempty"`
 }
 
-func handleLog(e centrifuge.LogEntry) {
-	instance := os.Getenv("INSTANCE_NAME")
-	if instance == "" {
-		instance = *instanceName
-	}
-	if instance != "" {
-		log.Printf("[%s] %s: %v", instance, e.Message, e.Fields)
-	} else {
-		log.Printf("%s: %v", e.Message, e.Fields)
-	}
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 func authMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		newCtx := centrifuge.SetCredentials(ctx, &centrifuge.Credentials{
-			UserID:   "42",
-			ExpireAt: time.Now().Unix() + 60,
-			Info:     []byte(`{"name": "Alexander"}`),
-		})
-		r = r.WithContext(newCtx)
-		h.ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
-func waitExitSignal(n *centrifuge.Node) {
-	sigCh := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		_ = n.Shutdown(context.Background())
-		done <- true
-	}()
-	<-done
-}
+func waitExitSignal(n *centrifuge.Node) { _ = "STUB: not implemented"; return }
 
 var exampleChannels = []string{
 	"chat:index",
@@ -73,25 +43,9 @@ var exampleChannels = []string{
 
 // Check whether channel is allowed for subscribing. In real case permission
 // check will probably be more complex than in this example.
-func channelSubscribeAllowed(channel string) bool {
-	for _, ch := range exampleChannels {
-		if ch == channel {
-			return true
-		}
-	}
-	return false
-}
+func channelSubscribeAllowed(channel string) bool { _ = "STUB: not implemented"; return false }
 
-func getInstanceName() string {
-	instance := os.Getenv("INSTANCE_NAME")
-	if instance == "" {
-		instance = *instanceName
-	}
-	if instance == "" {
-		instance = "unknown"
-	}
-	return instance
-}
+func getInstanceName() string { _ = "STUB: not implemented"; return "" }
 
 func main() {
 	flag.Parse()

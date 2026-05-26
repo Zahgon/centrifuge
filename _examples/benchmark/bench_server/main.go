@@ -6,10 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/signal"
 	"runtime"
 	"strconv"
-	"syscall"
 	"time"
 
 	_ "net/http/pprof"
@@ -17,21 +15,9 @@ import (
 	"github.com/centrifugal/centrifuge"
 )
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("%s: %+v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
-func waitExitSignal(n *centrifuge.Node) {
-	sigCh := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		_ = n.Shutdown(context.Background())
-		done <- true
-	}()
-	<-done
-}
+func waitExitSignal(n *centrifuge.Node) { _ = "STUB: not implemented"; return }
 
 func main() {
 	var queueInitialCap int

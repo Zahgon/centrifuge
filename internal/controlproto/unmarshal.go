@@ -13,16 +13,10 @@ var _ Decoder = (*ProtobufDecoder)(nil)
 type ProtobufDecoder struct{}
 
 // NewProtobufDecoder ...
-func NewProtobufDecoder() *ProtobufDecoder {
-	return &ProtobufDecoder{}
-}
+func NewProtobufDecoder() *ProtobufDecoder { _ = "STUB: not implemented"; return nil }
 
 // DecodeCommand ...
 func (e *ProtobufDecoder) DecodeCommand(data []byte) (*controlpb.Command, error) {
-	var cmd controlpb.Command
-	err := cmd.UnmarshalVT(data)
-	if err != nil {
-		return nil, err
-	}
-	return &cmd, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

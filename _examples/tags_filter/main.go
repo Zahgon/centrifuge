@@ -2,15 +2,8 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"html/template"
 	"log"
-	"math"
-	"math/rand"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 	"time"
 
 	_ "net/http/pprof"
@@ -19,53 +12,16 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("%s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 func authMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		newCtx := centrifuge.SetCredentials(ctx, &centrifuge.Credentials{
-			UserID: "42",
-			Info:   []byte(`{"name": "Alexander"}`),
-		})
-		r = r.WithContext(newCtx)
-		h.ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
-func handleIndex(w http.ResponseWriter, r *http.Request) {
-	useProtobuf := r.URL.Query().Get("protobuf") == "true"
+func handleIndex(w http.ResponseWriter, r *http.Request) { _ = "STUB: not implemented"; return }
 
-	tmpl, err := template.ParseFiles("index.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	data := struct {
-		UseProtobuf bool
-	}{
-		UseProtobuf: useProtobuf,
-	}
-
-	if err := tmpl.Execute(w, data); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func waitExitSignal(n *centrifuge.Node) {
-	sigCh := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		_ = n.Shutdown(context.Background())
-		done <- true
-	}()
-	<-done
-}
+func waitExitSignal(n *centrifuge.Node) { _ = "STUB: not implemented"; return }
 
 func main() {
 	node, _ := centrifuge.New(centrifuge.Config{
@@ -141,49 +97,10 @@ func main() {
 	log.Println("bye!")
 }
 
-func roundToTwoDecimals(f float64) float64 {
-	return math.Round(f*100) / 100
-}
+func roundToTwoDecimals(f float64) float64 { _ = "STUB: not implemented"; return 0 }
 
-func publishTickerData(node *centrifuge.Node) {
-	tc := time.NewTicker(time.Second)
-	defer tc.Stop()
+func publishTickerData(node *centrifuge.Node) { _ = "STUB: not implemented"; return }
 
-	tickers := []string{"AAPL", "GOOG", "MSFT", "AMZN", "TSLA", "META", "NVDA", "NFLX", "ORCL", "CRM"}
-	for {
-		select {
-		case <-tc.C:
-			for _, ticker := range tickers {
-				// Generate random bid/ask prices.
-				basePrice := 100.0 + float64(len(ticker))*10.0
-				bid := roundToTwoDecimals(basePrice + (rand.Float64()-0.5)*10.0)
-				ask := roundToTwoDecimals(bid + rand.Float64()*2.0)
+// Generate random bid/ask prices.
 
-				data := map[string]interface{}{
-					"ticker": ticker, // Maybe be excluded BTW since sent in tags.
-					"bid":    bid,
-					"ask":    ask,
-					"time":   time.Now().UnixMilli(),
-				}
-
-				jsonData, err := json.Marshal(data)
-				if err != nil {
-					log.Printf("Failed to marshal ticker data: %v", err)
-					continue
-				}
-
-				_, err = node.Publish(
-					"tickers",
-					jsonData,
-					centrifuge.WithHistory(300, time.Minute),
-					centrifuge.WithTags(map[string]string{
-						"ticker": ticker,
-					}),
-				)
-				if err != nil {
-					log.Printf("Failed to publish ticker data: %v", err)
-				}
-			}
-		}
-	}
-}
+// Maybe be excluded BTW since sent in tags.

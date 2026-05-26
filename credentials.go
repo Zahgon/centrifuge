@@ -30,15 +30,12 @@ var credentialsContextKey credentialsContextKeyType
 // to Context in authentication middleware will be used by Centrifuge library to
 // authenticate user.
 func SetCredentials(ctx context.Context, cred *Credentials) context.Context {
-	ctx = context.WithValue(ctx, credentialsContextKey, cred)
-	return ctx
+	_ = "STUB: not implemented"
+	return *new(context.Context)
 }
 
 // GetCredentials allows extracting Credentials from Context (if set previously).
 func GetCredentials(ctx context.Context) (*Credentials, bool) {
-	if val := ctx.Value(credentialsContextKey); val != nil {
-		cred, ok := val.(*Credentials)
-		return cred, ok
-	}
+	_ = "STUB: not implemented"
 	return nil, false
 }

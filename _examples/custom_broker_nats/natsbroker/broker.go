@@ -4,8 +4,6 @@ package natsbroker
 import (
 	"context"
 	"encoding/json"
-	"math"
-	"strings"
 	"sync"
 
 	"github.com/centrifugal/centrifuge"
@@ -40,67 +38,41 @@ type NatsBroker struct {
 
 // History ...
 func (b *NatsBroker) History(_ string, _ centrifuge.HistoryOptions) ([]*centrifuge.Publication, centrifuge.StreamPosition, error) {
-	return nil, centrifuge.StreamPosition{}, centrifuge.ErrorNotAvailable
+	_ = "STUB: not implemented"
+	return nil, *new(centrifuge.StreamPosition), nil
 }
 
 // RemoveHistory ...
-func (b *NatsBroker) RemoveHistory(_ string) error {
-	return centrifuge.ErrorNotAvailable
-}
+func (b *NatsBroker) RemoveHistory(_ string) error { _ = "STUB: not implemented"; return nil }
 
 // New creates NatsBroker.
 func New(n *centrifuge.Node, conf Config) (*NatsBroker, error) {
-	b := &NatsBroker{
-		node:   n,
-		config: conf,
-		subs:   make(map[channelID]*nats.Subscription),
-	}
-	return b, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (b *NatsBroker) controlChannel() channelID {
-	return channelID(b.config.Prefix + ".control")
-}
+func (b *NatsBroker) controlChannel() channelID { _ = "STUB: not implemented"; return *new(channelID) }
 
 func (b *NatsBroker) nodeChannel(nodeID string) channelID {
-	return channelID(b.config.Prefix + ".node." + nodeID)
+	_ = "STUB: not implemented"
+	return *new(channelID)
 }
 
 func (b *NatsBroker) clientChannel(ch string) channelID {
-	return channelID(b.config.Prefix + ".client." + ch)
+	_ = "STUB: not implemented"
+	return *new(channelID)
 }
 
-func (b *NatsBroker) extractChannel(subject string) string {
-	return strings.TrimPrefix(subject, b.config.Prefix+".client.")
-}
+func (b *NatsBroker) extractChannel(subject string) string { _ = "STUB: not implemented"; return "" }
 
 // RegisterBrokerEventHandler ...
 func (b *NatsBroker) RegisterBrokerEventHandler(h centrifuge.BrokerEventHandler) error {
-	b.eventHandler = h
-	servers := b.config.Servers
-	if servers == "" {
-		servers = nats.DefaultURL
-	}
-	nc, err := nats.Connect(servers, nats.ReconnectBufSize(-1), nats.MaxReconnects(math.MaxInt64))
-	if err != nil {
-		return err
-	}
-	_, err = nc.Subscribe(string(b.controlChannel()), b.handleControl)
-	if err != nil {
-		return err
-	}
-	_, err = nc.Subscribe(string(b.nodeChannel(b.node.ID())), b.handleControl)
-	if err != nil {
-		return err
-	}
-	b.nc = nc
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // Close is not implemented.
-func (b *NatsBroker) Close(_ context.Context) error {
-	return nil
-}
+func (b *NatsBroker) Close(_ context.Context) error { _ = "STUB: not implemented"; return nil }
 
 type pushType int
 
@@ -117,147 +89,46 @@ type push struct {
 
 // Publish - see centrifuge.Broker interface description.
 func (b *NatsBroker) Publish(ch string, data []byte, opts centrifuge.PublishOptions) (centrifuge.PublishResult, error) {
-	pub := &centrifuge.Publication{
-		Data: data,
-		Info: opts.ClientInfo,
-	}
-	data, err := json.Marshal(pub)
-	if err != nil {
-		return centrifuge.PublishResult{}, err
-	}
-	byteMessage, err := json.Marshal(push{
-		Type: pubPushType,
-		Data: data,
-	})
-	if err != nil {
-		return centrifuge.PublishResult{}, err
-	}
-	return centrifuge.PublishResult{}, b.nc.Publish(string(b.clientChannel(ch)), byteMessage)
+	_ = "STUB: not implemented"
+	return *new(centrifuge.PublishResult), nil
 }
 
 // PublishJoin - see centrifuge.Broker interface description.
 func (b *NatsBroker) PublishJoin(ch string, info *centrifuge.ClientInfo) error {
-	data, err := json.Marshal(info)
-	if err != nil {
-		return err
-	}
-	byteMessage, err := json.Marshal(push{
-		Type: joinPushType,
-		Data: data,
-	})
-	if err != nil {
-		return err
-	}
-	return b.nc.Publish(string(b.clientChannel(ch)), byteMessage)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // PublishLeave - see centrifuge.Broker interface description.
 func (b *NatsBroker) PublishLeave(ch string, info *centrifuge.ClientInfo) error {
-	data, err := json.Marshal(info)
-	if err != nil {
-		return err
-	}
-	byteMessage, err := json.Marshal(push{
-		Type: leavePushType,
-		Data: data,
-	})
-	if err != nil {
-		return err
-	}
-	return b.nc.Publish(string(b.clientChannel(ch)), byteMessage)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // PublishControl - see centrifuge.Broker interface description.
 func (b *NatsBroker) PublishControl(data []byte, nodeID, _ string) error {
-	var channelID channelID
-	if nodeID == "" {
-		channelID = b.controlChannel()
-	} else {
-		channelID = b.nodeChannel(nodeID)
-	}
-	return b.nc.Publish(string(channelID), data)
-}
-
-func (b *NatsBroker) handleClientMessage(subject string, data []byte) error {
-	var p push
-	err := json.Unmarshal(data, &p)
-	if err != nil {
-		return err
-	}
-	channel := b.extractChannel(subject)
-	switch p.Type {
-	case pubPushType:
-		var pub centrifuge.Publication
-		err := json.Unmarshal(p.Data, &pub)
-		if err != nil {
-			return err
-		}
-		_ = b.eventHandler.HandlePublication(channel, &pub, centrifuge.StreamPosition{}, false, nil)
-	case joinPushType:
-		var info centrifuge.ClientInfo
-		err := json.Unmarshal(p.Data, &info)
-		if err != nil {
-			return err
-		}
-		_ = b.eventHandler.HandleJoin(channel, &info)
-	case leavePushType:
-		var info centrifuge.ClientInfo
-		err := json.Unmarshal(p.Data, &info)
-		if err != nil {
-			return err
-		}
-		_ = b.eventHandler.HandleLeave(channel, &info)
-	default:
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
-func (b *NatsBroker) handleClient(m *nats.Msg) {
-	_ = b.handleClientMessage(m.Subject, m.Data)
+func (b *NatsBroker) handleClientMessage(subject string, data []byte) error {
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (b *NatsBroker) handleControl(m *nats.Msg) {
-	_ = b.controlEventHandler.HandleControl(m.Data)
-}
+func (b *NatsBroker) handleClient(m *nats.Msg) { _ = "STUB: not implemented"; return }
+
+func (b *NatsBroker) handleControl(m *nats.Msg) { _ = "STUB: not implemented"; return }
 
 func (b *NatsBroker) RegisterControlEventHandler(h centrifuge.ControlEventHandler) error {
-	b.controlEventHandler = h
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // Subscribe - see centrifuge.Broker interface description.
-func (b *NatsBroker) Subscribe(channels ...string) error {
-	for _, ch := range channels {
-		if strings.Contains(ch, "*") || strings.Contains(ch, ">") {
-			// Do not support wildcard subscriptions.
-			return centrifuge.ErrorBadRequest
-		}
-		b.subsMu.Lock()
-		clientChannel := b.clientChannel(ch)
-		if _, ok := b.subs[clientChannel]; ok {
-			b.subsMu.Unlock()
-			continue
-		}
-		subClient, err := b.nc.Subscribe(string(b.clientChannel(ch)), b.handleClient)
-		if err != nil {
-			b.subsMu.Unlock()
-			return err
-		}
-		b.subs[clientChannel] = subClient
-		b.subsMu.Unlock()
-	}
-	return nil
-}
+func (b *NatsBroker) Subscribe(channels ...string) error { _ = "STUB: not implemented"; return nil }
+
+// Do not support wildcard subscriptions.
 
 // Unsubscribe - see centrifuge.Broker interface description.
-func (b *NatsBroker) Unsubscribe(channels ...string) error {
-	b.subsMu.Lock()
-	defer b.subsMu.Unlock()
-	for _, ch := range channels {
-		if sub, ok := b.subs[b.clientChannel(ch)]; ok {
-			_ = sub.Unsubscribe()
-			delete(b.subs, b.clientChannel(ch))
-		}
-	}
-	return nil
-}
+func (b *NatsBroker) Unsubscribe(channels ...string) error { _ = "STUB: not implemented"; return nil }

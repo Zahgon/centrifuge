@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"time"
 
@@ -16,27 +15,11 @@ var (
 	serverAddr = flag.String("server_addr", "localhost:10000", "The server address in the format of host:port")
 )
 
-func handlePush(push *clientproto.Push) {
-	if push.Connect != nil {
-		log.Printf("connected to a server with ID: %s", push.Connect.Client)
-	} else if push.Pub != nil {
-		log.Printf("new publication from channel %s: %s", push.Channel, fmt.Sprintf("%#v", string(push.Pub.Data)))
-	} else if push.Disconnect != nil {
-		log.Printf("disconnected from a server: %s", push.Disconnect.Reason)
-	} else {
-		log.Printf("push type handling not implemented: %v", push)
-	}
-}
+func handlePush(push *clientproto.Push) { _ = "STUB: not implemented"; return }
 
 func handleStream(stream clientproto.CentrifugeUni_ConsumeClient) {
-	for {
-		push, err := stream.Recv()
-		if err != nil {
-			log.Printf("error recv: %v", err)
-			return
-		}
-		handlePush(push)
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 func main() {

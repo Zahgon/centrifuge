@@ -572,7 +572,8 @@ type CommandProcessedEvent struct {
 
 // newCommandProcessedEvent is a helper to create CommandProcessedEvent.
 func newCommandProcessedEvent(command *protocol.Command, err error, reply *protocol.Reply, started time.Time) CommandProcessedEvent {
-	return CommandProcessedEvent{Command: command, Error: err, Reply: reply, Started: started}
+	_ = "STUB: not implemented"
+	return *new(CommandProcessedEvent)
 }
 
 // CommandProcessedHandler allows setting a callback which will be called after

@@ -5,17 +5,12 @@
 package websocket
 
 import (
-	"bytes"
 	"context"
 	"crypto/tls"
 	"errors"
-	"fmt"
-	"io"
 	"net"
 	"net/http"
-	"net/http/httptrace"
 	"net/url"
-	"strings"
 	"time"
 )
 
@@ -85,27 +80,15 @@ type Dialer struct {
 
 // Dial creates a new client connection by calling DialContext with a background context.
 func (d *Dialer) Dial(urlStr string, requestHeader http.Header) (*Conn, *http.Response, string, error) {
-	return d.DialContext(context.Background(), urlStr, requestHeader)
+	_ = "STUB: not implemented"
+	return nil, nil, "", nil
 }
 
 var errMalformedURL = errors.New("malformed ws or wss URL")
 
 func hostPortNoPort(u *url.URL) (hostPort, hostNoPort string) {
-	hostPort = u.Host
-	hostNoPort = u.Host
-	if i := strings.LastIndex(u.Host, ":"); i > strings.LastIndex(u.Host, "]") {
-		hostNoPort = hostNoPort[:i]
-	} else {
-		switch u.Scheme {
-		case "wss":
-			hostPort += ":443"
-		case "https":
-			hostPort += ":443"
-		default:
-			hostPort += ":80"
-		}
-	}
-	return hostPort, hostNoPort
+	_ = "STUB: not implemented"
+	return "", ""
 }
 
 // DialContext creates a new client connection. Use requestHeader to specify the
@@ -120,266 +103,29 @@ func hostPortNoPort(u *url.URL) (hostPort, hostNoPort string) {
 // etcetera. The response body may not contain the entire response and does not
 // need to be closed by the application.
 func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader http.Header) (*Conn, *http.Response, string, error) {
-	if d.HandshakeTimeout == 0 {
-		d.HandshakeTimeout = 15 * time.Second
-	}
-
-	challengeKey, err := generateChallengeKey()
-	if err != nil {
-		return nil, nil, "", err
-	}
-
-	u, err := url.Parse(urlStr)
-	if err != nil {
-		return nil, nil, "", err
-	}
-
-	switch u.Scheme {
-	case "ws":
-		u.Scheme = "http"
-	case "wss":
-		u.Scheme = "https"
-	default:
-		return nil, nil, "", errMalformedURL
-	}
-
-	if u.User != nil {
-		// User name and password are not allowed in websocket URIs.
-		return nil, nil, "", errMalformedURL
-	}
-
-	req := &http.Request{
-		Method:     http.MethodGet,
-		URL:        u,
-		Proto:      "HTTP/1.1",
-		ProtoMajor: 1,
-		ProtoMinor: 1,
-		Header:     make(http.Header),
-		Host:       u.Host,
-	}
-	req = req.WithContext(ctx)
-
-	// Set the cookies present in the cookie jar of the dialer
-	if d.Jar != nil {
-		for _, cookie := range d.Jar.Cookies(u) {
-			req.AddCookie(cookie)
-		}
-	}
-
-	// Set the request headers using the capitalization for names and values in
-	// RFC examples. Although the capitalization shouldn't matter, there are
-	// servers that depend on it. The Header.Set method is not used because the
-	// method canonicalizes the header names.
-	req.Header["Upgrade"] = []string{"websocket"}
-	req.Header["Connection"] = []string{"Upgrade"}
-	req.Header["Sec-WebSocket-Key"] = []string{challengeKey}
-	req.Header["Sec-WebSocket-Version"] = []string{"13"}
-	if len(d.Subprotocols) > 0 {
-		req.Header["Sec-WebSocket-Protocol"] = []string{strings.Join(d.Subprotocols, ", ")}
-	}
-	for k, vs := range requestHeader {
-		switch {
-		case k == "Host":
-			if len(vs) > 0 {
-				req.Host = vs[0]
-			}
-		case k == "Upgrade" ||
-			k == "Connection" ||
-			k == "Sec-Websocket-Key" ||
-			k == "Sec-Websocket-Version" ||
-			k == "Sec-Websocket-Extensions" ||
-			(k == "Sec-Websocket-Protocol" && len(d.Subprotocols) > 0):
-			return nil, nil, "", errors.New("websocket: duplicate header not allowed: " + k)
-		case k == "Sec-Websocket-Protocol":
-			req.Header["Sec-WebSocket-Protocol"] = vs
-		default:
-			req.Header[k] = vs
-		}
-	}
-
-	if d.EnableCompression {
-		req.Header["Sec-WebSocket-Extensions"] = []string{"permessage-deflate; server_no_context_takeover; client_no_context_takeover"}
-	}
-
-	if d.HandshakeTimeout != 0 {
-		var cancel func()
-		ctx, cancel = context.WithTimeout(ctx, d.HandshakeTimeout)
-		defer cancel()
-	}
-
-	// Get network dial function.
-	var netDial func(network, add string) (net.Conn, error)
-
-	switch u.Scheme {
-	case "http":
-		if d.NetDialContext != nil {
-			netDial = func(network, addr string) (net.Conn, error) {
-				return d.NetDialContext(ctx, network, addr)
-			}
-		} else if d.NetDial != nil {
-			netDial = d.NetDial
-		}
-	case "https":
-		if d.NetDialTLSContext != nil {
-			netDial = func(network, addr string) (net.Conn, error) {
-				return d.NetDialTLSContext(ctx, network, addr)
-			}
-		} else if d.NetDialContext != nil {
-			netDial = func(network, addr string) (net.Conn, error) {
-				return d.NetDialContext(ctx, network, addr)
-			}
-		} else if d.NetDial != nil {
-			netDial = d.NetDial
-		}
-	default:
-		return nil, nil, "", errMalformedURL
-	}
-
-	if netDial == nil {
-		netDialer := &net.Dialer{}
-		netDial = func(network, addr string) (net.Conn, error) {
-			return netDialer.DialContext(ctx, network, addr)
-		}
-	}
-
-	// If needed, wrap the dial function to set the connection deadline.
-	if deadline, ok := ctx.Deadline(); ok {
-		forwardDial := netDial
-		netDial = func(network, addr string) (net.Conn, error) {
-			c, err := forwardDial(network, addr)
-			if err != nil {
-				return nil, err
-			}
-			err = c.SetDeadline(deadline)
-			if err != nil {
-				_ = c.Close()
-				return nil, err
-			}
-			return c, nil
-		}
-	}
-
-	hostPort, hostNoPort := hostPortNoPort(u)
-	trace := httptrace.ContextClientTrace(ctx)
-	if trace != nil && trace.GetConn != nil {
-		trace.GetConn(hostPort)
-	}
-
-	netConn, err := netDial("tcp", hostPort)
-	if err != nil {
-		return nil, nil, "", err
-	}
-	if trace != nil && trace.GotConn != nil {
-		trace.GotConn(httptrace.GotConnInfo{
-			Conn: netConn,
-		})
-	}
-
-	defer func() {
-		if netConn != nil {
-			_ = netConn.Close()
-		}
-	}()
-
-	if u.Scheme == "https" && d.NetDialTLSContext == nil {
-		// If NetDialTLSContext is set, assume that the TLS handshake has already been done
-
-		cfg := cloneTLSConfig(d.TLSClientConfig)
-		if cfg.ServerName == "" {
-			cfg.ServerName = hostNoPort
-		}
-		tlsConn := tls.Client(netConn, cfg)
-		netConn = tlsConn
-
-		if trace != nil && trace.TLSHandshakeStart != nil {
-			trace.TLSHandshakeStart()
-		}
-		err := doHandshake(ctx, tlsConn, cfg)
-		if trace != nil && trace.TLSHandshakeDone != nil {
-			trace.TLSHandshakeDone(tlsConn.ConnectionState(), err)
-		}
-
-		if err != nil {
-			return nil, nil, "", err
-		}
-	}
-
-	conn := newConn(netConn, false, d.ReadBufferSize, d.WriteBufferSize, d.WriteBufferPool, nil, nil)
-
-	if err := req.Write(netConn); err != nil {
-		return nil, nil, "", err
-	}
-
-	if trace != nil && trace.GotFirstResponseByte != nil {
-		if peek, err := conn.br.Peek(1); err == nil && len(peek) == 1 {
-			trace.GotFirstResponseByte()
-		}
-	}
-
-	resp, err := http.ReadResponse(conn.br, req)
-	if err != nil {
-		if d.TLSClientConfig != nil {
-			for _, proto := range d.TLSClientConfig.NextProtos {
-				if proto != "http/1.1" {
-					return nil, nil, "", fmt.Errorf(
-						"websocket: protocol %q was given but is not supported;"+
-							"sharing tls.Config with net/http Transport can cause this error: %w",
-						proto, err,
-					)
-				}
-			}
-		}
-		return nil, nil, "", err
-	}
-
-	if d.Jar != nil {
-		if rc := resp.Cookies(); len(rc) > 0 {
-			d.Jar.SetCookies(u, rc)
-		}
-	}
-
-	if resp.StatusCode != 101 ||
-		!tokenListContainsValue(resp.Header, "Upgrade", "websocket") ||
-		!tokenListContainsValue(resp.Header, "Connection", "upgrade") ||
-		resp.Header.Get("Sec-Websocket-Accept") != computeAcceptKey(challengeKey) {
-		// Before closing the network connection on return from this
-		// function, slurp up some of the response to aid application
-		// debugging.
-		buf := make([]byte, 1024)
-		n, _ := io.ReadFull(resp.Body, buf)
-		resp.Body = io.NopCloser(bytes.NewReader(buf[:n]))
-		return nil, resp, "", ErrBadHandshake
-	}
-
-	for _, ext := range parseExtensions(resp.Header) {
-		if ext[""] != "permessage-deflate" {
-			continue
-		}
-		_, snct := ext["server_no_context_takeover"]
-		_, cnct := ext["client_no_context_takeover"]
-		if !snct || !cnct {
-			return nil, resp, "", errInvalidCompression
-		}
-		conn.newCompressionWriter = compressNoContextTakeover
-		conn.newDecompressionReader = decompressNoContextTakeover
-		break
-	}
-
-	resp.Body = io.NopCloser(bytes.NewReader([]byte{}))
-
-	err = netConn.SetDeadline(time.Time{})
-	if err != nil {
-		return conn, resp, "", err
-	}
-	netConn = nil // to avoid close in defer.
-	return conn, resp, resp.Header.Get("Sec-Websocket-Protocol"), nil
+	_ = "STUB: not implemented"
+	return nil, nil, "", nil
 }
 
-func cloneTLSConfig(cfg *tls.Config) *tls.Config {
-	if cfg == nil {
-		return &tls.Config{
-			MinVersion: tls.VersionTLS12,
-		}
-	}
-	return cfg.Clone()
-}
+// User name and password are not allowed in websocket URIs.
+
+// Set the cookies present in the cookie jar of the dialer
+
+// Set the request headers using the capitalization for names and values in
+// RFC examples. Although the capitalization shouldn't matter, there are
+// servers that depend on it. The Header.Set method is not used because the
+// method canonicalizes the header names.
+
+// Get network dial function.
+
+// If needed, wrap the dial function to set the connection deadline.
+
+// If NetDialTLSContext is set, assume that the TLS handshake has already been done
+
+// Before closing the network connection on return from this
+// function, slurp up some of the response to aid application
+// debugging.
+
+// to avoid close in defer.
+
+func cloneTLSConfig(cfg *tls.Config) *tls.Config { _ = "STUB: not implemented"; return nil }

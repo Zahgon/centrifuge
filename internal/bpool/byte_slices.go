@@ -1,7 +1,6 @@
 package bpool
 
 import (
-	"math/bits"
 	"sync"
 )
 
@@ -20,58 +19,19 @@ type ByteSlicesBuf struct {
 var byteSlicesBufPools [13]sync.Pool
 
 // GetByteSlicesBuf returns a ByteSlicesBuf with capacity >= length
-func GetByteSlicesBuf(length int) *ByteSlicesBuf {
-	if length <= 0 {
-		length = 16 // default
-	}
-	if length > maxByteSlicesBufLength {
-		return &ByteSlicesBuf{
-			B: make([][]byte, 0, length),
-		}
-	}
-	idx := nextLogBase2ByteSlices(uint32(length))
-	if v := byteSlicesBufPools[idx].Get(); v != nil {
-		buf := v.(*ByteSlicesBuf)
-		buf.B = buf.B[:0]
-		return buf
-	}
-	capacity := 1 << idx
-	return &ByteSlicesBuf{
-		B: make([][]byte, 0, capacity),
-	}
-}
+func GetByteSlicesBuf(length int) *ByteSlicesBuf { _ = "STUB: not implemented"; return nil }
+
+// default
 
 // PutByteSlicesBuf returns buf to the pool
-func PutByteSlicesBuf(buf *ByteSlicesBuf) {
-	capacity := cap(buf.B)
-	if capacity == 0 || capacity > maxByteSlicesBufLength {
-		return // drop oversized buffers
-	}
-	idx := prevLogBase2ByteSlices(uint32(capacity))
-	// Clear the buffer
-	for i := range buf.B {
-		buf.B[i] = nil
-	}
-	buf.B = buf.B[:0]
-	byteSlicesBufPools[idx].Put(buf)
-}
+func PutByteSlicesBuf(buf *ByteSlicesBuf) { _ = "STUB: not implemented"; return }
+
+// drop oversized buffers
+
+// Clear the buffer
 
 // nextLogBase2ByteSlices returns log2(v) rounded up
-func nextLogBase2ByteSlices(v uint32) uint32 {
-	if v == 0 {
-		return 0
-	}
-	return uint32(32 - bits.LeadingZeros32(v-1))
-}
+func nextLogBase2ByteSlices(v uint32) uint32 { _ = "STUB: not implemented"; return 0 }
 
 // prevLogBase2ByteSlices returns log2(v) rounded down
-func prevLogBase2ByteSlices(v uint32) uint32 {
-	if v == 0 {
-		return 0
-	}
-	next := nextLogBase2ByteSlices(v)
-	if v == (1 << next) {
-		return next
-	}
-	return next - 1
-}
+func prevLogBase2ByteSlices(v uint32) uint32 { _ = "STUB: not implemented"; return 0 }

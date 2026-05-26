@@ -9,67 +9,26 @@
 // the table for a configured partition count.
 package redispartition
 
-import (
-	"fmt"
-	"sort"
-)
-
 const totalSlots = 16384
 
 // FindTags returns the precomputed tags for numPartitions. The returned
 // slice is shared with the package-level table and MUST NOT be mutated by
 // the caller. An error is returned if numPartitions is not one of the
 // precomputed sizes; use PrecomputedSizes to discover them.
-func FindTags(numPartitions int) ([]string, error) {
-	tags, ok := precomputed[numPartitions]
-	if !ok {
-		return nil, fmt.Errorf("numPartitions %d is not precomputed; supported sizes: %v", numPartitions, PrecomputedSizes())
-	}
-	return tags, nil
-}
+func FindTags(numPartitions int) ([]string, error) { _ = "STUB: not implemented"; return nil, nil }
 
 // PrecomputedSizes returns the sorted list of partition counts for which
 // precomputed tags are bundled.
-func PrecomputedSizes() []int {
-	sizes := make([]int, 0, len(precomputed))
-	for n := range precomputed {
-		sizes = append(sizes, n)
-	}
-	sort.Ints(sizes)
-	return sizes
-}
+func PrecomputedSizes() []int { _ = "STUB: not implemented"; return nil }
 
 // SlotToNode returns which node (0-based) owns a given slot in a cluster
 // of the given size. This matches Redis Cluster's contiguous slot
 // assignment (sn = totalSlots / numNodes, with the first totalSlots %
 // numNodes nodes getting one extra slot).
-func SlotToNode(slot, numNodes int) int {
-	sn := totalSlots / numNodes
-	r := totalSlots % numNodes
-	b := r * (sn + 1)
-	if slot < b {
-		return slot / (sn + 1)
-	}
-	return r + (slot-b)/sn
-}
+func SlotToNode(slot, numNodes int) int { _ = "STUB: not implemented"; return 0 }
 
 // TagSlot returns the Redis hash slot for a given tag string.
-func TagSlot(tag string) int {
-	return int(crc16([]byte(tag))) % totalSlots
-}
+func TagSlot(tag string) int { _ = "STUB: not implemented"; return 0 }
 
 // crc16 computes CRC-CCITT (XModem) matching Redis's CRC16.
-func crc16(data []byte) uint16 {
-	crc := uint16(0)
-	for _, b := range data {
-		crc ^= uint16(b) << 8
-		for range 8 {
-			if crc&0x8000 != 0 {
-				crc = (crc << 1) ^ 0x1021
-			} else {
-				crc <<= 1
-			}
-		}
-	}
-	return crc
-}
+func crc16(data []byte) uint16 { _ = "STUB: not implemented"; return 0 }

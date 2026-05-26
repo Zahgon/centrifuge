@@ -41,62 +41,28 @@ type preparedFrame struct {
 // representation will be calculated lazily only once for a set of current
 // connection options.
 func NewPreparedMessage(messageType int, data []byte) (*PreparedMessage, error) {
-	pm := &PreparedMessage{
-		messageType: messageType,
-		frames:      make(map[prepareKey]*preparedFrame),
-		data:        data,
-	}
-
-	// Prepare a plain server frame.
-	_, frameData, err := pm.frame(prepareKey{isServer: true, compress: false})
-	if err != nil {
-		return nil, err
-	}
-
-	// To protect against caller modifying the data argument, remember the data
-	// copied to the plain server frame.
-	pm.data = frameData[len(frameData)-len(data):]
-	return pm, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// Prepare a plain server frame.
+
+// To protect against caller modifying the data argument, remember the data
+// copied to the plain server frame.
 
 func (pm *PreparedMessage) frame(key prepareKey) (int, []byte, error) {
-	pm.mu.Lock()
-	frame, ok := pm.frames[key]
-	if !ok {
-		frame = &preparedFrame{}
-		pm.frames[key] = frame
-	}
-	pm.mu.Unlock()
-
-	var err error
-	frame.once.Do(func() {
-		// Prepare a frame using a 'fake' connection.
-		// TODO: Refactor code in conn.go to allow more direct construction of
-		// the frame.
-		mu := make(chan struct{}, 1)
-		mu <- struct{}{}
-		var nc prepareConn
-		c := &Conn{
-			conn:                   &nc,
-			mu:                     mu,
-			isServer:               key.isServer,
-			compressionLevel:       key.compressionLevel,
-			enableWriteCompression: true,
-			writeBuf:               make([]byte, defaultWriteBufferSize+maxFrameHeaderSize),
-		}
-		if key.compress {
-			c.newCompressionWriter = compressNoContextTakeover
-		}
-		err = c.WriteMessage(pm.messageType, pm.data)
-		frame.data = nc.buf.Bytes()
-	})
-	return pm.messageType, frame.data, err
+	_ = "STUB: not implemented"
+	return 0, nil, nil
 }
+
+// Prepare a frame using a 'fake' connection.
+// TODO: Refactor code in conn.go to allow more direct construction of
+// the frame.
 
 type prepareConn struct {
 	buf bytes.Buffer
 	net.Conn
 }
 
-func (pc *prepareConn) Write(p []byte) (int, error)        { return pc.buf.Write(p) }
-func (pc *prepareConn) SetWriteDeadline(_ time.Time) error { return nil }
+func (pc *prepareConn) Write(p []byte) (int, error)        { _ = "STUB: not implemented"; return 0, nil }
+func (pc *prepareConn) SetWriteDeadline(_ time.Time) error { _ = "STUB: not implemented"; return nil }

@@ -5,9 +5,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 	"time"
 
 	_ "net/http/pprof"
@@ -22,27 +19,13 @@ type clientMessage struct {
 	Input     string `json:"input"`
 }
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("%s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
-func waitExitSignal(n *centrifuge.Node) {
-	sigCh := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		_ = n.Shutdown(context.Background())
-		done <- true
-	}()
-	<-done
-}
+func waitExitSignal(n *centrifuge.Node) { _ = "STUB: not implemented"; return }
 
 // Check whether channel is allowed for subscribing. In real case permission
 // most probably will be more complex than in this example.
-func channelSubscribeAllowed(channel string) bool {
-	return channel == "chat"
-}
+func channelSubscribeAllowed(channel string) bool { _ = "STUB: not implemented"; return false }
 
 func main() {
 	node, _ := centrifuge.New(centrifuge.Config{

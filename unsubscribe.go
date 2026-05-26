@@ -1,7 +1,5 @@
 package centrifuge
 
-import "fmt"
-
 // Unsubscribe describes how client must be unsubscribed (or was unsubscribed)
 // from a channel.
 // Codes for unsubscribe advices going to client connections must be in range [2000, 2999].
@@ -20,9 +18,7 @@ type Unsubscribe struct {
 }
 
 // String representation.
-func (d Unsubscribe) String() string {
-	return fmt.Sprintf("code: %d, reason: %s", d.Code, d.Reason)
-}
+func (d Unsubscribe) String() string { _ = "STUB: not implemented"; return "" }
 
 var (
 	unsubscribeClient = Unsubscribe{

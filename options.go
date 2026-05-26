@@ -11,59 +11,42 @@ type PublishOption func(*PublishOptions)
 
 // WithHistory tells Broker to save message to history stream with provided size and ttl.
 func WithHistory(size int, ttl time.Duration, metaTTL ...time.Duration) PublishOption {
-	return func(opts *PublishOptions) {
-		opts.HistorySize = size
-		opts.HistoryTTL = ttl
-		if len(metaTTL) > 0 {
-			opts.HistoryMetaTTL = metaTTL[0]
-		}
-	}
+	_ = "STUB: not implemented"
+	return *new(PublishOption)
 }
 
 // WithIdempotencyKey tells Broker the idempotency key for the publication.
 // See PublishOptions.IdempotencyKey.
 func WithIdempotencyKey(key string) PublishOption {
-	return func(opts *PublishOptions) {
-		opts.IdempotencyKey = key
-	}
+	_ = "STUB: not implemented"
+	return *new(PublishOption)
 }
 
 // WithKey sets a key for the publication. When set, the publication is associated
 // with a specific key within the channel. This may enable per-key debouncing or
 // channel level per-key batching. The key is delivered to subscribers in the Publication.
-func WithKey(key string) PublishOption {
-	return func(opts *PublishOptions) {
-		opts.Key = key
-	}
-}
+func WithKey(key string) PublishOption { _ = "STUB: not implemented"; return *new(PublishOption) }
 
 // WithDelta tells Broker to use delta streaming.
-func WithDelta(enabled bool) PublishOption {
-	return func(opts *PublishOptions) {
-		opts.UseDelta = enabled
-	}
-}
+func WithDelta(enabled bool) PublishOption { _ = "STUB: not implemented"; return *new(PublishOption) }
 
 // WithIdempotentResultTTL sets the time of expiration for results of idempotent publications.
 // See PublishOptions.IdempotentResultTTL for more description and defaults.
 func WithIdempotentResultTTL(ttl time.Duration) PublishOption {
-	return func(opts *PublishOptions) {
-		opts.IdempotentResultTTL = ttl
-	}
+	_ = "STUB: not implemented"
+	return *new(PublishOption)
 }
 
 // WithClientInfo adds ClientInfo to Publication.
 func WithClientInfo(info *ClientInfo) PublishOption {
-	return func(opts *PublishOptions) {
-		opts.ClientInfo = info
-	}
+	_ = "STUB: not implemented"
+	return *new(PublishOption)
 }
 
 // WithTags allows setting Publication.Tags.
 func WithTags(tags map[string]string) PublishOption {
-	return func(opts *PublishOptions) {
-		opts.Tags = tags
-	}
+	_ = "STUB: not implemented"
+	return *new(PublishOption)
 }
 
 // WithVersion allows application to provide a tip for Centrifuge about
@@ -85,10 +68,8 @@ func WithTags(tags map[string]string) PublishOption {
 // If versionEpoch is an empty string, then Centrifuge does not look at it when comparing
 // versions.
 func WithVersion(version uint64, versionEpoch string) PublishOption {
-	return func(opts *PublishOptions) {
-		opts.Version = version
-		opts.VersionEpoch = versionEpoch
-	}
+	_ = "STUB: not implemented"
+	return *new(PublishOption)
 }
 
 // SubscriptionType defines the type of subscription.
@@ -109,26 +90,9 @@ const (
 
 // IsMapPresence reports whether t is a map presence subscription type
 // (SubscriptionTypeMapClients or SubscriptionTypeMapUsers).
-func (t SubscriptionType) IsMapPresence() bool {
-	return t == SubscriptionTypeMapClients || t == SubscriptionTypeMapUsers
-}
+func (t SubscriptionType) IsMapPresence() bool { _ = "STUB: not implemented"; return false }
 
-func (t SubscriptionType) String() string {
-	switch t {
-	case SubscriptionTypeStream:
-		return "stream"
-	case SubscriptionTypeMap:
-		return "map"
-	case SubscriptionTypeMapClients:
-		return "map_clients"
-	case SubscriptionTypeMapUsers:
-		return "map_users"
-	case SubscriptionTypeSharedPoll:
-		return "shared_poll"
-	default:
-		return "unknown"
-	}
-}
+func (t SubscriptionType) String() string { _ = "STUB: not implemented"; return "" }
 
 // FilterNode is a filter expression tree for matching against key-value tags.
 // Used for server-side publication filtering (ServerTagsFilter in SubscribeOptions).
@@ -243,51 +207,44 @@ type SubscribeOption func(*SubscribeOptions)
 
 // WithExpireAt allows setting ExpireAt field.
 func WithExpireAt(expireAt int64) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.ExpireAt = expireAt
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithChannelInfo ...
 func WithChannelInfo(chanInfo []byte) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.ChannelInfo = chanInfo
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithEmitPresence ...
 func WithEmitPresence(enabled bool) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.EmitPresence = enabled
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithEmitJoinLeave ...
 func WithEmitJoinLeave(enabled bool) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.EmitJoinLeave = enabled
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithPushJoinLeave ...
 func WithPushJoinLeave(enabled bool) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.PushJoinLeave = enabled
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithPositioning ...
 func WithPositioning(enabled bool) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.EnablePositioning = enabled
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithRecovery ...
 func WithRecovery(enabled bool) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.EnableRecovery = enabled
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 type RecoveryMode uint8
@@ -299,62 +256,54 @@ const (
 
 // WithRecoveryMode ...
 func WithRecoveryMode(mode RecoveryMode) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.RecoveryMode = mode
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithSubscribeClient allows setting client ID that should be subscribed.
 // This option not used when Client.Subscribe called.
 func WithSubscribeClient(clientID string) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.clientID = clientID
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithSubscribeSession allows setting session ID that should be subscribed.
 // This option not used when Client.Subscribe called.
 func WithSubscribeSession(sessionID string) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.sessionID = sessionID
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithSubscribeData allows setting custom data to send with subscribe push.
 func WithSubscribeData(data []byte) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.Data = data
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithRecoverSince allows setting SubscribeOptions.RecoverFrom.
 func WithRecoverSince(since *StreamPosition) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.RecoverSince = since
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithSubscribeSource allows setting SubscribeOptions.Source.
 func WithSubscribeSource(source uint8) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.Source = source
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithSubscribeHistoryMetaTTL allows setting SubscribeOptions.HistoryMetaTTL.
 func WithSubscribeHistoryMetaTTL(metaTTL time.Duration) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.HistoryMetaTTL = metaTTL
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // WithSubscribeLabelFilter restricts the subscribe to connections whose
 // Client.Labels match the filter. See SubscribeOptions.LabelFilter for the
 // detailed contract.
 func WithSubscribeLabelFilter(f *FilterNode) SubscribeOption {
-	return func(opts *SubscribeOptions) {
-		opts.LabelFilter = f
-	}
+	_ = "STUB: not implemented"
+	return *new(SubscribeOption)
 }
 
 // RefreshOptions ...
@@ -384,47 +333,41 @@ type RefreshOption func(options *RefreshOptions)
 
 // WithRefreshClient to limit refresh only for specified client ID.
 func WithRefreshClient(clientID string) RefreshOption {
-	return func(opts *RefreshOptions) {
-		opts.clientID = clientID
-	}
+	_ = "STUB: not implemented"
+	return *new(RefreshOption)
 }
 
 // WithRefreshSession to limit refresh only for specified session ID.
 func WithRefreshSession(sessionID string) RefreshOption {
-	return func(opts *RefreshOptions) {
-		opts.sessionID = sessionID
-	}
+	_ = "STUB: not implemented"
+	return *new(RefreshOption)
 }
 
 // WithRefreshExpired to set expired flag - connection will be closed with DisconnectExpired.
 func WithRefreshExpired(expired bool) RefreshOption {
-	return func(opts *RefreshOptions) {
-		opts.Expired = expired
-	}
+	_ = "STUB: not implemented"
+	return *new(RefreshOption)
 }
 
 // WithRefreshExpireAt to set unix seconds in the future when connection should expire.
 // Zero value means no expiration.
 func WithRefreshExpireAt(expireAt int64) RefreshOption {
-	return func(opts *RefreshOptions) {
-		opts.ExpireAt = expireAt
-	}
+	_ = "STUB: not implemented"
+	return *new(RefreshOption)
 }
 
 // WithRefreshInfo to override connection info.
 func WithRefreshInfo(info []byte) RefreshOption {
-	return func(opts *RefreshOptions) {
-		opts.Info = info
-	}
+	_ = "STUB: not implemented"
+	return *new(RefreshOption)
 }
 
 // WithRefreshLabelFilter restricts the refresh to connections whose
 // Client.Labels match the filter. See RefreshOptions.LabelFilter for the
 // detailed contract.
 func WithRefreshLabelFilter(f *FilterNode) RefreshOption {
-	return func(opts *RefreshOptions) {
-		opts.LabelFilter = f
-	}
+	_ = "STUB: not implemented"
+	return *new(RefreshOption)
 }
 
 // UnsubscribeOptions ...
@@ -451,33 +394,29 @@ type UnsubscribeOption func(options *UnsubscribeOptions)
 // WithUnsubscribeClient allows setting client ID that should be unsubscribed.
 // This option not used when Client.Unsubscribe called.
 func WithUnsubscribeClient(clientID string) UnsubscribeOption {
-	return func(opts *UnsubscribeOptions) {
-		opts.clientID = clientID
-	}
+	_ = "STUB: not implemented"
+	return *new(UnsubscribeOption)
 }
 
 // WithUnsubscribeSession allows setting session ID that should be unsubscribed.
 // This option not used when Client.Unsubscribe called.
 func WithUnsubscribeSession(sessionID string) UnsubscribeOption {
-	return func(opts *UnsubscribeOptions) {
-		opts.sessionID = sessionID
-	}
+	_ = "STUB: not implemented"
+	return *new(UnsubscribeOption)
 }
 
 // WithCustomUnsubscribe allows setting custom Unsubscribe.
 func WithCustomUnsubscribe(unsubscribe Unsubscribe) UnsubscribeOption {
-	return func(opts *UnsubscribeOptions) {
-		opts.unsubscribe = &unsubscribe
-	}
+	_ = "STUB: not implemented"
+	return *new(UnsubscribeOption)
 }
 
 // WithUnsubscribeLabelFilter restricts the unsubscribe to connections whose
 // Client.Labels match the filter. See UnsubscribeOptions.LabelFilter for the
 // detailed contract.
 func WithUnsubscribeLabelFilter(f *FilterNode) UnsubscribeOption {
-	return func(opts *UnsubscribeOptions) {
-		opts.LabelFilter = f
-	}
+	_ = "STUB: not implemented"
+	return *new(UnsubscribeOption)
 }
 
 // DisconnectOptions define some fields to alter behaviour of Disconnect operation.
@@ -505,39 +444,34 @@ type DisconnectOption func(options *DisconnectOptions)
 
 // WithCustomDisconnect allows setting custom Disconnect.
 func WithCustomDisconnect(disconnect Disconnect) DisconnectOption {
-	return func(opts *DisconnectOptions) {
-		opts.Disconnect = &disconnect
-	}
+	_ = "STUB: not implemented"
+	return *new(DisconnectOption)
 }
 
 // WithDisconnectClient allows setting Client.
 func WithDisconnectClient(clientID string) DisconnectOption {
-	return func(opts *DisconnectOptions) {
-		opts.clientID = clientID
-	}
+	_ = "STUB: not implemented"
+	return *new(DisconnectOption)
 }
 
 // WithDisconnectSession allows setting session ID to disconnect.
 func WithDisconnectSession(sessionID string) DisconnectOption {
-	return func(opts *DisconnectOptions) {
-		opts.sessionID = sessionID
-	}
+	_ = "STUB: not implemented"
+	return *new(DisconnectOption)
 }
 
 // WithDisconnectClientWhitelist allows setting ClientWhitelist.
 func WithDisconnectClientWhitelist(whitelist []string) DisconnectOption {
-	return func(opts *DisconnectOptions) {
-		opts.ClientWhitelist = whitelist
-	}
+	_ = "STUB: not implemented"
+	return *new(DisconnectOption)
 }
 
 // WithDisconnectLabelFilter restricts the disconnect to connections whose
 // Client.Labels match the filter. See DisconnectOptions.LabelFilter for the
 // detailed contract.
 func WithDisconnectLabelFilter(f *FilterNode) DisconnectOption {
-	return func(opts *DisconnectOptions) {
-		opts.LabelFilter = f
-	}
+	_ = "STUB: not implemented"
+	return *new(DisconnectOption)
 }
 
 // HistoryOption is a type to represent various History options.
@@ -547,34 +481,23 @@ type HistoryOption func(options *HistoryOptions)
 const NoLimit = -1
 
 // WithLimit allows setting HistoryOptions.Limit.
-func WithLimit(limit int) HistoryOption {
-	return func(opts *HistoryOptions) {
-		opts.Filter.Limit = limit
-	}
-}
+func WithLimit(limit int) HistoryOption { _ = "STUB: not implemented"; return *new(HistoryOption) }
 
 // WithSince allows setting HistoryOptions.Since option.
 func WithSince(sp *StreamPosition) HistoryOption {
-	return func(opts *HistoryOptions) {
-		opts.Filter.Since = sp
-	}
+	_ = "STUB: not implemented"
+	return *new(HistoryOption)
 }
 
 // WithReverse allows setting HistoryOptions.Reverse option.
-func WithReverse(reverse bool) HistoryOption {
-	return func(opts *HistoryOptions) {
-		opts.Filter.Reverse = reverse
-	}
-}
+func WithReverse(reverse bool) HistoryOption { _ = "STUB: not implemented"; return *new(HistoryOption) }
 
 func WithHistoryFilter(filter HistoryFilter) HistoryOption {
-	return func(opts *HistoryOptions) {
-		opts.Filter = filter
-	}
+	_ = "STUB: not implemented"
+	return *new(HistoryOption)
 }
 
 func WithHistoryMetaTTL(metaTTL time.Duration) HistoryOption {
-	return func(opts *HistoryOptions) {
-		opts.MetaTTL = metaTTL
-	}
+	_ = "STUB: not implemented"
+	return *new(HistoryOption)
 }

@@ -3,15 +3,11 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"net"
 	"net/http"
-	"os"
-	"os/signal"
 	"strconv"
 	"sync"
-	"syscall"
 	"time"
 
 	_ "net/http/pprof"
@@ -20,7 +16,6 @@ import (
 
 	"github.com/centrifugal/centrifuge"
 	"google.golang.org/grpc"
-	"google.golang.org/protobuf/proto"
 )
 
 var (
@@ -30,20 +25,15 @@ var (
 )
 
 func grpcAuthInterceptor(srv any, ss grpc.ServerStream, _ *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+	_ = "STUB: not implemented"
 	// You probably want to authenticate user by information included in stream metadata.
 	// meta, ok := metadata.FromIncomingContext(ss.Context())
 	// But here we skip it for simplicity and just always authenticate user with ID 42.
-	ctx := ss.Context()
-	newCtx := centrifuge.SetCredentials(ctx, &centrifuge.Credentials{
-		UserID: "42",
-	})
-
-	// GRPC has no builtin method to add data to context so here we use small
-	// wrapper over ServerStream.
-	wrapped := WrapServerStream(ss)
-	wrapped.WrappedContext = newCtx
-	return handler(srv, wrapped)
+	return nil
 }
+
+// GRPC has no builtin method to add data to context so here we use small
+// wrapper over ServerStream.
 
 // WrappedServerStream is a thin wrapper around grpc.ServerStream that allows modifying context.
 // This can be replaced by analogue from github.com/grpc-ecosystem/go-grpc-middleware
@@ -58,33 +48,23 @@ type WrappedServerStream struct {
 
 // Context returns the wrapper's WrappedContext, overwriting the nested grpc.ServerStream.Context()
 func (w *WrappedServerStream) Context() context.Context {
-	return w.WrappedContext
+	_ = "STUB: not implemented"
+	return *
+
+	// WrapServerStream returns a ServerStream that has the ability to overwrite context.
+	new(context.Context)
 }
 
-// WrapServerStream returns a ServerStream that has the ability to overwrite context.
 func WrapServerStream(stream grpc.ServerStream) *WrappedServerStream {
-	if existing, ok := stream.(*WrappedServerStream); ok {
-		return existing
-	}
-	return &WrappedServerStream{ServerStream: stream, WrappedContext: stream.Context()}
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func waitExitSignal(n *centrifuge.Node, server *grpc.Server) {
-	sigCh := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		_ = n.Shutdown(context.Background())
-		server.GracefulStop()
-		done <- true
-	}()
-	<-done
-}
+func waitExitSignal(n *centrifuge.Node, server *grpc.Server) { _ = "STUB: not implemented"; return }
 
 // RegisterGRPCServerClient ...
 func RegisterGRPCServerClient(n *centrifuge.Node, server *grpc.Server, config GRPCClientServiceConfig) error {
-	clientproto.RegisterCentrifugeUniServer(server, newGRPCClientService(n, config))
+	_ = "STUB: not implemented"
 	return nil
 }
 
@@ -100,69 +80,14 @@ type grpcClientService struct {
 
 // newGRPCClientService creates new Service.
 func newGRPCClientService(n *centrifuge.Node, c GRPCClientServiceConfig) *grpcClientService {
-	return &grpcClientService{
-		config: c,
-		node:   n,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Consume is a unidirectional server->client stream with real-time data.
 func (s *grpcClientService) Consume(req *clientproto.ConnectRequest, stream clientproto.CentrifugeUni_ConsumeServer) error {
-	streamDataCh := make(chan []byte)
-	ack := make(chan struct{})
-	transport := newGRPCTransport(stream, streamDataCh, ack)
-
-	connectRequest := centrifuge.ConnectRequest{
-		Token:   req.Token,
-		Data:    req.Data,
-		Name:    req.Name,
-		Version: req.Version,
-	}
-	if req.Subs != nil {
-		subs := make(map[string]centrifuge.SubscribeRequest)
-		for k, v := range connectRequest.Subs {
-			subs[k] = centrifuge.SubscribeRequest{
-				Recover: v.Recover,
-				Offset:  v.Offset,
-				Epoch:   v.Epoch,
-			}
-		}
-	}
-	c, closeFn, err := centrifuge.NewClient(stream.Context(), s.node, transport)
-	if err != nil {
-		log.Printf("client create error: %v", err)
-		return err
-	}
-	defer func() { _ = closeFn() }()
-
-	log.Printf("client connected (id %s)", c.ID())
-	defer func(started time.Time) {
-		log.Printf("client disconnected (id %s, duration %s)", c.ID(), time.Since(started))
-	}(time.Now())
-
-	c.Connect(connectRequest)
-
-	sendAck := func() {
-		select {
-		case ack <- struct{}{}:
-		case <-stream.Context().Done():
-		}
-	}
-
-	for {
-		select {
-		case streamData := <-streamDataCh:
-			err := stream.SendMsg(rawFrame(streamData))
-			if err != nil {
-				log.Printf("stream send error: %v", err)
-				sendAck()
-				return err
-			}
-			sendAck()
-		case <-transport.closeCh:
-			return nil
-		}
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // grpcTransport wraps a stream.
@@ -176,93 +101,58 @@ type grpcTransport struct {
 }
 
 func newGRPCTransport(stream clientproto.CentrifugeUni_ConsumeServer, streamDataCh chan []byte, ack chan struct{}) *grpcTransport {
-	return &grpcTransport{
-		stream:       stream,
-		streamDataCh: streamDataCh,
-		closeCh:      make(chan struct{}),
-		ack:          ack,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (t *grpcTransport) Name() string {
-	return "grpc"
-}
+func (t *grpcTransport) Name() string { _ = "STUB: not implemented"; return "" }
 
-func (t *grpcTransport) AcceptProtocol() string {
-	return "h2"
-}
+func (t *grpcTransport) AcceptProtocol() string { _ = "STUB: not implemented"; return "" }
 
 func (t *grpcTransport) Protocol() centrifuge.ProtocolType {
-	return centrifuge.ProtocolTypeProtobuf
+	_ = "STUB: not implemented"
+	return *new(centrifuge.ProtocolType)
 }
 
 func (t *grpcTransport) ProtocolVersion() centrifuge.ProtocolVersion {
-	return centrifuge.ProtocolVersion2
+	_ = "STUB: not implemented"
+	return *new(centrifuge.ProtocolVersion)
 }
 
 // Unidirectional returns whether transport is unidirectional.
 func (t *grpcTransport) Unidirectional() bool {
-	return true
-}
+	_ = "STUB: not implemented"
 
-// Emulation ...
-func (t *grpcTransport) Emulation() bool {
+	// Emulation ...
 	return false
 }
 
-// DisabledPushFlags ...
+func (t *grpcTransport) Emulation() bool {
+	_ = "STUB: not implemented"
+
+	// DisabledPushFlags ...
+	return false
+}
+
 func (t *grpcTransport) DisabledPushFlags() uint64 {
+	_ = "STUB: not implemented"
+
+	// PingPongConfig ...
 	return 0
 }
 
-// PingPongConfig ...
 func (t *grpcTransport) PingPongConfig() centrifuge.PingPongConfig {
-	return centrifuge.PingPongConfig{
-		PingInterval: 25 * time.Second,
-		PongTimeout:  10 * time.Second,
-	}
+	_ = "STUB: not implemented"
+	return *new(centrifuge.PingPongConfig)
 }
 
-func (t *grpcTransport) Write(message []byte) error {
-	return t.WriteMany(message)
-}
+func (t *grpcTransport) Write(message []byte) error { _ = "STUB: not implemented"; return nil }
 
-func (t *grpcTransport) WriteMany(messages ...[]byte) error {
-	t.mu.RLock()
-	if t.closed {
-		t.mu.RUnlock()
-		return nil
-	}
-	t.mu.RUnlock()
-	for i := 0; i < len(messages); i++ {
-		select {
-		case t.streamDataCh <- messages[i]:
-		case <-t.closeCh:
-			return nil
-		}
-		select {
-		case <-t.ack:
-		case <-t.closeCh:
-			return nil
-		}
-	}
-	return nil
-}
+func (t *grpcTransport) WriteMany(messages ...[]byte) error { _ = "STUB: not implemented"; return nil }
 
-func (t *grpcTransport) Close(_ centrifuge.Disconnect) error {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	if t.closed {
-		return nil
-	}
-	t.closed = true
-	close(t.closeCh)
-	return nil
-}
+func (t *grpcTransport) Close(_ centrifuge.Disconnect) error { _ = "STUB: not implemented"; return nil }
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("%s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 var exampleChannel = "unidirectional"
 
@@ -372,26 +262,8 @@ type rawFrame []byte
 
 type rawCodec struct{}
 
-func (c *rawCodec) Marshal(v any) ([]byte, error) {
-	out, ok := v.(rawFrame)
-	if !ok {
-		vv, ok := v.(proto.Message)
-		if !ok {
-			return nil, fmt.Errorf("failed to marshal, message is %T, want proto.Message", v)
-		}
-		return proto.Marshal(vv)
-	}
-	return out, nil
-}
+func (c *rawCodec) Marshal(v any) ([]byte, error) { _ = "STUB: not implemented"; return nil, nil }
 
-func (c *rawCodec) Unmarshal(data []byte, v any) error {
-	vv, ok := v.(proto.Message)
-	if !ok {
-		return fmt.Errorf("failed to unmarshal, message is %T, want proto.Message", v)
-	}
-	return proto.Unmarshal(data, vv)
-}
+func (c *rawCodec) Unmarshal(data []byte, v any) error { _ = "STUB: not implemented"; return nil }
 
-func (c *rawCodec) String() string {
-	return "proto"
-}
+func (c *rawCodec) String() string { _ = "STUB: not implemented"; return "" }

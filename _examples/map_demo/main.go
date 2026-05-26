@@ -15,9 +15,7 @@ import (
 	"github.com/centrifugal/centrifuge"
 )
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("[centrifuge] %s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 var (
 	port      = flag.String("port", "3000", "HTTP server port")
@@ -51,7 +49,7 @@ func main() {
 				}
 				if channel == "visualizer" {
 					return centrifuge.MapChannelOptions{
-						Mode:               centrifuge.MapModePersistent,
+						Mode:        centrifuge.MapModePersistent,
 						MinPageSize: 1, // Set to 1 for demo purposes, default is 100.
 					}
 				}

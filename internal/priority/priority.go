@@ -1,10 +1,6 @@
 // Package priority provides priority queue.
 package priority
 
-import (
-	"container/heap"
-)
-
 // An Item is something we manage in a priority queue.
 type Item struct {
 	Value    string // The value of the item; arbitrary.
@@ -18,42 +14,24 @@ type Queue []*Item
 
 // Len ...
 func (pq Queue) Len() int {
-	return len(pq)
+	_ = "STUB: not implemented"
+
+	// Less ...
+	return 0
 }
 
-// Less ...
-func (pq Queue) Less(i, j int) bool {
-	return pq[i].Priority < pq[j].Priority
-}
+func (pq Queue) Less(i, j int) bool { _ = "STUB: not implemented"; return false }
 
 // Swap ...
-func (pq Queue) Swap(i, j int) {
-	pq[i], pq[j] = pq[j], pq[i]
-	pq[i].index = i
-	pq[j].index = j
-}
+func (pq Queue) Swap(i, j int) { _ = "STUB: not implemented"; return }
 
 // Push value into queue.
-func (pq *Queue) Push(x any) {
-	n := len(*pq)
-	item := x.(*Item)
-	item.index = n
-	*pq = append(*pq, item)
-}
+func (pq *Queue) Push(x any) { _ = "STUB: not implemented"; return }
 
 // Pop value from queue.
-func (pq *Queue) Pop() any {
-	old := *pq
-	n := len(old)
-	item := old[n-1]
-	item.index = -1 // for safety
-	*pq = old[0 : n-1]
-	return item
-}
+func (pq *Queue) Pop() any { _ = "STUB: not implemented"; return *new(any) }
+
+// for safety
 
 // MakeQueue allows to create priority queue.
-func MakeQueue() Queue {
-	pq := make(Queue, 0)
-	heap.Init(&pq)
-	return pq
-}
+func MakeQueue() Queue { _ = "STUB: not implemented"; return *new(Queue) }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"html/template"
 	"log"
 	"math/rand"
 	"net/http"
@@ -12,122 +11,48 @@ import (
 	"github.com/centrifugal/centrifuge/_examples/compression_playground/apppb"
 
 	"github.com/centrifugal/centrifuge"
-	"google.golang.org/protobuf/encoding/protojson"
-	"google.golang.org/protobuf/proto"
 )
 
 func simulateMatch(ctx context.Context, num int32, node *centrifuge.Node, useProtobufPayload bool) {
+	_ = "STUB: not implemented"
 	// Predefined lists of player names for each team.
-	playerNamesTeamA := []string{"John Doe", "Jane Smith", "Alex Johnson", "Chris Lee", "Pat Kim", "Sam Morgan", "Jamie Brown", "Casey Davis", "Morgan Garcia", "Taylor White", "Jordan Martinez"}
-	playerNamesTeamB := []string{"Robin Wilson", "Drew Taylor", "Jessie Bailey", "Casey Flores", "Jordan Walker", "Charlie Green", "Alex Adams", "Morgan Thompson", "Taylor Clark", "Jordan Hernandez", "Jamie Lewis"}
-
-	// Example setup
-	match := &apppb.Match{
-		Id: num,
-		HomeTeam: &apppb.Team{
-			Name:    "Real Madrid",
-			Players: assignNamesToPlayers(playerNamesTeamA),
-		},
-		AwayTeam: &apppb.Team{
-			Name:    "Barcelona",
-			Players: assignNamesToPlayers(playerNamesTeamB),
-		},
-	}
-
-	totalSimulationTime := 1                                             // Total time for the simulation in seconds
-	totalEvents := 30                                                    // Total number of events to simulate
-	eventInterval := float64(totalSimulationTime) / float64(totalEvents) // Time between events
-
-	r := rand.New(rand.NewSource(37))
-
-	for i := 0; i < totalEvents; i++ {
-		// Sleep between events
-		select {
-		case <-ctx.Done():
-			return
-		case <-time.After(time.Duration(eventInterval*1000) * time.Millisecond):
-		}
-
-		// Calculate minute based on event occurrence.
-		minute := int(float64(i) * eventInterval / float64(totalSimulationTime) * 90)
-		eventType := chooseRandomEventType(r)
-		team := chooseRandomTeam(r, match)
-		playerIndex := r.Intn(11) // Choose one of the 11 players randomly
-
-		event := &apppb.Event{Type: eventType, Minute: int32(minute)}
-		team.Players[playerIndex].Events = append(team.Players[playerIndex].Events, event)
-
-		if eventType == apppb.EventType_GOAL {
-			team.Score++
-		}
-
-		var data []byte
-		var err error
-
-		if useProtobufPayload {
-			data, err = proto.Marshal(match)
-		} else {
-			data, err = protojson.MarshalOptions{
-				UseProtoNames: false,
-			}.Marshal(match)
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-		ch := "match:js:1"
-		if useProtobufPayload {
-			ch = "match:pb:1"
-		}
-		_, err = node.Publish(
-			ch, data,
-			centrifuge.WithDelta(true),
-			centrifuge.WithHistory(10, time.Minute),
-		)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
+	return
 }
 
+// Example setup
+
+// Total time for the simulation in seconds
+// Total number of events to simulate
+// Time between events
+
+// Sleep between events
+
+// Calculate minute based on event occurrence.
+
+// Choose one of the 11 players randomly
+
 func chooseRandomEventType(r *rand.Rand) apppb.EventType {
-	events := []apppb.EventType{
-		apppb.EventType_GOAL, apppb.EventType_YELLOW_CARD, apppb.EventType_RED_CARD, apppb.EventType_SUBSTITUTE}
-	return events[r.Intn(len(events))]
+	_ = "STUB: not implemented"
+	return *new(apppb.EventType)
 }
 
 func chooseRandomTeam(r *rand.Rand, match *apppb.Match) *apppb.Team {
-	if r.Intn(2) == 0 {
-		return match.HomeTeam
-	}
-	return match.AwayTeam
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Helper function to create players with names from a given list
-func assignNamesToPlayers(names []string) []*apppb.Player {
-	var players [11]*apppb.Player
-	for i, name := range names {
-		players[i] = &apppb.Player{Name: name}
-	}
-	return players[:]
-}
+func assignNamesToPlayers(names []string) []*apppb.Player { _ = "STUB: not implemented"; return nil }
 
-func auth(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		// Put authentication Credentials into request Context.
-		// Since we don't have any session backend here we simply
-		// set user ID as empty string. Users with empty ID called
-		// anonymous users, in real app you should decide whether
-		// anonymous users allowed to connect to your server or not.
-		cred := &centrifuge.Credentials{
-			UserID: "",
-			Info:   []byte(r.URL.RawQuery), // This is a hack for the playground.
-		}
-		newCtx := centrifuge.SetCredentials(ctx, cred)
-		r = r.WithContext(newCtx)
-		h.ServeHTTP(w, r)
-	})
-}
+func auth(h http.Handler) http.Handler { _ = "STUB: not implemented"; return *new(http.Handler) }
+
+// Put authentication Credentials into request Context.
+// Since we don't have any session backend here we simply
+// set user ID as empty string. Users with empty ID called
+// anonymous users, in real app you should decide whether
+// anonymous users allowed to connect to your server or not.
+
+// This is a hack for the playground.
 
 func main() {
 	// Node is the core object in Centrifuge library responsible for
@@ -273,29 +198,8 @@ func main() {
 	}
 }
 
-func serveIndex(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("templates/index.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	_ = t.Execute(w, nil)
-}
+func serveIndex(w http.ResponseWriter, r *http.Request) { _ = "STUB: not implemented"; return }
 
-func serveJsonApp(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("templates/json.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	_ = t.Execute(w, nil)
-}
+func serveJsonApp(w http.ResponseWriter, r *http.Request) { _ = "STUB: not implemented"; return }
 
-func serveProtobufApp(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("templates/protobuf.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	_ = t.Execute(w, nil)
-}
+func serveProtobufApp(w http.ResponseWriter, r *http.Request) { _ = "STUB: not implemented"; return }

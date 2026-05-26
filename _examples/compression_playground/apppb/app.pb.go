@@ -7,10 +7,10 @@
 package apppb
 
 import (
+	sync "sync"
+
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
-	sync "sync"
 )
 
 const (
@@ -48,32 +48,27 @@ var (
 	}
 )
 
-func (x EventType) Enum() *EventType {
-	p := new(EventType)
-	*p = x
-	return p
-}
+func (x EventType) Enum() *EventType { _ = "STUB: not implemented"; return nil }
 
-func (x EventType) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
+func (x EventType) String() string { _ = "STUB: not implemented"; return "" }
 
 func (EventType) Descriptor() protoreflect.EnumDescriptor {
-	return file_app_proto_enumTypes[0].Descriptor()
+	_ = "STUB: not implemented"
+	return *new(protoreflect.EnumDescriptor)
 }
 
 func (EventType) Type() protoreflect.EnumType {
-	return &file_app_proto_enumTypes[0]
+	_ = "STUB: not implemented"
+	return *new(protoreflect.EnumType)
 }
 
 func (x EventType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.EnumNumber)
 }
 
 // Deprecated: Use EventType.Descriptor instead.
-func (EventType) EnumDescriptor() ([]byte, []int) {
-	return file_app_proto_rawDescGZIP(), []int{0}
-}
+func (EventType) EnumDescriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
 type Event struct {
 	state         protoimpl.MessageState
@@ -84,51 +79,23 @@ type Event struct {
 	Minute int32     `protobuf:"varint,2,opt,name=minute,proto3" json:"minute,omitempty"`
 }
 
-func (x *Event) Reset() {
-	*x = Event{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Event) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Event) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Event) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Event) ProtoMessage() {}
+func (*Event) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Event) ProtoReflect() protoreflect.Message {
-	mi := &file_app_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Event.ProtoReflect.Descriptor instead.
-func (*Event) Descriptor() ([]byte, []int) {
-	return file_app_proto_rawDescGZIP(), []int{0}
-}
+func (*Event) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Event) GetType() EventType {
-	if x != nil {
-		return x.Type
-	}
-	return EventType_UNKNOWN
-}
+func (x *Event) GetType() EventType { _ = "STUB: not implemented"; return *new(EventType) }
 
-func (x *Event) GetMinute() int32 {
-	if x != nil {
-		return x.Minute
-	}
-	return 0
-}
+func (x *Event) GetMinute() int32 { _ = "STUB: not implemented"; return 0 }
 
 type Player struct {
 	state         protoimpl.MessageState
@@ -139,51 +106,23 @@ type Player struct {
 	Events []*Event `protobuf:"bytes,2,rep,name=events,proto3" json:"events,omitempty"`
 }
 
-func (x *Player) Reset() {
-	*x = Player{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Player) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Player) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Player) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Player) ProtoMessage() {}
+func (*Player) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Player) ProtoReflect() protoreflect.Message {
-	mi := &file_app_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Player.ProtoReflect.Descriptor instead.
-func (*Player) Descriptor() ([]byte, []int) {
-	return file_app_proto_rawDescGZIP(), []int{1}
-}
+func (*Player) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Player) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
+func (x *Player) GetName() string { _ = "STUB: not implemented"; return "" }
 
-func (x *Player) GetEvents() []*Event {
-	if x != nil {
-		return x.Events
-	}
-	return nil
-}
+func (x *Player) GetEvents() []*Event { _ = "STUB: not implemented"; return nil }
 
 type Team struct {
 	state         protoimpl.MessageState
@@ -195,58 +134,25 @@ type Team struct {
 	Players []*Player `protobuf:"bytes,3,rep,name=players,proto3" json:"players,omitempty"`
 }
 
-func (x *Team) Reset() {
-	*x = Team{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Team) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Team) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Team) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Team) ProtoMessage() {}
+func (*Team) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Team) ProtoReflect() protoreflect.Message {
-	mi := &file_app_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Team.ProtoReflect.Descriptor instead.
-func (*Team) Descriptor() ([]byte, []int) {
-	return file_app_proto_rawDescGZIP(), []int{2}
-}
+func (*Team) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Team) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
+func (x *Team) GetName() string { _ = "STUB: not implemented"; return "" }
 
-func (x *Team) GetScore() int32 {
-	if x != nil {
-		return x.Score
-	}
-	return 0
-}
+func (x *Team) GetScore() int32 { _ = "STUB: not implemented"; return 0 }
 
-func (x *Team) GetPlayers() []*Player {
-	if x != nil {
-		return x.Players
-	}
-	return nil
-}
+func (x *Team) GetPlayers() []*Player { _ = "STUB: not implemented"; return nil }
 
 type Match struct {
 	state         protoimpl.MessageState
@@ -258,58 +164,25 @@ type Match struct {
 	AwayTeam *Team `protobuf:"bytes,3,opt,name=away_team,json=awayTeam,proto3" json:"away_team,omitempty"`
 }
 
-func (x *Match) Reset() {
-	*x = Match{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_app_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Match) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Match) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Match) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Match) ProtoMessage() {}
+func (*Match) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Match) ProtoReflect() protoreflect.Message {
-	mi := &file_app_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Match.ProtoReflect.Descriptor instead.
-func (*Match) Descriptor() ([]byte, []int) {
-	return file_app_proto_rawDescGZIP(), []int{3}
-}
+func (*Match) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Match) GetId() int32 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
+func (x *Match) GetId() int32 { _ = "STUB: not implemented"; return 0 }
 
-func (x *Match) GetHomeTeam() *Team {
-	if x != nil {
-		return x.HomeTeam
-	}
-	return nil
-}
+func (x *Match) GetHomeTeam() *Team { _ = "STUB: not implemented"; return nil }
 
-func (x *Match) GetAwayTeam() *Team {
-	if x != nil {
-		return x.AwayTeam
-	}
-	return nil
-}
+func (x *Match) GetAwayTeam() *Team { _ = "STUB: not implemented"; return nil }
 
 var File_app_proto protoreflect.FileDescriptor
 
@@ -369,12 +242,7 @@ var (
 	file_app_proto_rawDescData = file_app_proto_rawDesc
 )
 
-func file_app_proto_rawDescGZIP() []byte {
-	file_app_proto_rawDescOnce.Do(func() {
-		file_app_proto_rawDescData = protoimpl.X.CompressGZIP(file_app_proto_rawDescData)
-	})
-	return file_app_proto_rawDescData
-}
+func file_app_proto_rawDescGZIP() []byte { _ = "STUB: not implemented"; return nil }
 
 var file_app_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_app_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
@@ -398,78 +266,5 @@ var file_app_proto_depIdxs = []int32{
 	0, // [0:5] is the sub-list for field type_name
 }
 
-func init() { file_app_proto_init() }
-func file_app_proto_init() {
-	if File_app_proto != nil {
-		return
-	}
-	if !protoimpl.UnsafeEnabled {
-		file_app_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Event); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_app_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Player); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_app_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Team); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_app_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Match); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-	}
-	type x struct{}
-	out := protoimpl.TypeBuilder{
-		File: protoimpl.DescBuilder{
-			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_app_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   4,
-			NumExtensions: 0,
-			NumServices:   0,
-		},
-		GoTypes:           file_app_proto_goTypes,
-		DependencyIndexes: file_app_proto_depIdxs,
-		EnumInfos:         file_app_proto_enumTypes,
-		MessageInfos:      file_app_proto_msgTypes,
-	}.Build()
-	File_app_proto = out.File
-	file_app_proto_rawDesc = nil
-	file_app_proto_goTypes = nil
-	file_app_proto_depIdxs = nil
-}
+func init()                { file_app_proto_init() }
+func file_app_proto_init() { _ = "STUB: not implemented"; return }

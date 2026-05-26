@@ -2,6 +2,4 @@
 
 package websocket
 
-func stringToBytes(s string) []byte {
-	return []byte(s)
-}
+func stringToBytes(s string) []byte { _ = "STUB: not implemented"; return nil }

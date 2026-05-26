@@ -4,19 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
-	"net/url"
-	"os"
-	"os/signal"
 	"strconv"
-	"strings"
 	"sync"
-	"syscall"
 	"time"
 
-	"github.com/centrifugal/centrifuge/internal/cancelctx"
 	"github.com/gorilla/websocket"
 
 	_ "net/http/pprof"
@@ -29,32 +22,14 @@ var (
 	redis = flag.Bool("redis", false, "Use Redis")
 )
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("%s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 func authMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		newCtx := centrifuge.SetCredentials(ctx, &centrifuge.Credentials{
-			UserID: "42",
-		})
-		r = r.WithContext(newCtx)
-		h.ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
-func waitExitSignal(n *centrifuge.Node) {
-	sigCh := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		_ = n.Shutdown(context.Background())
-		done <- true
-	}()
-	<-done
-}
+func waitExitSignal(n *centrifuge.Node) { _ = "STUB: not implemented"; return }
 
 var exampleChannel = "unidirectional"
 
@@ -151,35 +126,13 @@ func main() {
 }
 
 func handleSubscribe(node *centrifuge.Node) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		clientID := req.URL.Query().Get("client")
-		if clientID == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		err := node.Subscribe("42", exampleChannel, centrifuge.WithSubscribeClient(clientID))
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-	}
+	_ = "STUB: not implemented"
+	return *new(http.HandlerFunc)
 }
 
 func handleUnsubscribe(node *centrifuge.Node) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		clientID := req.URL.Query().Get("client")
-		if clientID == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		err := node.Unsubscribe("42", exampleChannel, centrifuge.WithUnsubscribeClient(clientID))
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-	}
+	_ = "STUB: not implemented"
+	return *new(http.HandlerFunc)
 }
 
 // websocketTransport is a wrapper struct over websocket connection to fit session
@@ -203,146 +156,79 @@ type websocketTransportOptions struct {
 }
 
 func newWebsocketTransport(conn *websocket.Conn, opts websocketTransportOptions, graceCh chan struct{}) *websocketTransport {
-	transport := &websocketTransport{
-		conn:    conn,
-		closeCh: make(chan struct{}),
-		graceCh: graceCh,
-		opts:    opts,
-	}
-	if opts.pingInterval > 0 {
-		transport.addPing()
-	}
-	return transport
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (t *websocketTransport) ping() {
-	select {
-	case <-t.closeCh:
-		return
-	default:
-		deadline := time.Now().Add(t.opts.pingInterval / 2)
-		err := t.conn.WriteControl(websocket.PingMessage, nil, deadline)
-		if err != nil {
-			_ = t.Close(centrifuge.DisconnectWriteError)
-			return
-		}
-		t.addPing()
-	}
-}
+func (t *websocketTransport) ping() { _ = "STUB: not implemented"; return }
 
-func (t *websocketTransport) addPing() {
-	t.mu.Lock()
-	if t.closed {
-		t.mu.Unlock()
-		return
-	}
-	t.pingTimer = time.AfterFunc(t.opts.pingInterval, t.ping)
-	t.mu.Unlock()
-}
+func (t *websocketTransport) addPing() { _ = "STUB: not implemented"; return }
 
 // Name returns name of transport.
-func (t *websocketTransport) Name() string {
-	return "websocket"
-}
+func (t *websocketTransport) Name() string { _ = "STUB: not implemented"; return "" }
 
 func (t *websocketTransport) AcceptProtocol() string {
-	return "h1"
+	_ = "STUB: not implemented"
+
+	// Protocol returns transport protocol.
+	return ""
 }
 
-// Protocol returns transport protocol.
 func (t *websocketTransport) Protocol() centrifuge.ProtocolType {
-	return t.opts.protoType
+	_ = "STUB: not implemented"
+	return *
+
+	// ProtocolVersion returns transport ProtocolVersion.
+	new(centrifuge.ProtocolType)
 }
 
-// ProtocolVersion returns transport ProtocolVersion.
 func (t *websocketTransport) ProtocolVersion() centrifuge.ProtocolVersion {
-	return centrifuge.ProtocolVersion2
+	_ = "STUB: not implemented"
+	return *new(centrifuge.ProtocolVersion)
 }
 
 // Unidirectional returns whether transport is unidirectional.
 func (t *websocketTransport) Unidirectional() bool {
-	return true
-}
+	_ = "STUB: not implemented"
 
-// Emulation ...
-func (t *websocketTransport) Emulation() bool {
+	// Emulation ...
 	return false
 }
 
-// DisabledPushFlags ...
+func (t *websocketTransport) Emulation() bool {
+	_ = "STUB: not implemented"
+
+	// DisabledPushFlags ...
+	return false
+}
+
 func (t *websocketTransport) DisabledPushFlags() uint64 {
+	_ = "STUB: not implemented"
+
+	// PingPongConfig ...
 	return 0
 }
 
-// PingPongConfig ...
 func (t *websocketTransport) PingPongConfig() centrifuge.PingPongConfig {
-	return centrifuge.PingPongConfig{
-		PingInterval: DefaultWebsocketPingInterval,
-		PongTimeout:  DefaultWebsocketPingInterval / 3,
-	}
+	_ = "STUB: not implemented"
+	return *new(centrifuge.PingPongConfig)
 }
 
-func (t *websocketTransport) writeData(data []byte) error {
-	if t.opts.compressionMinSize > 0 {
-		t.conn.EnableWriteCompression(len(data) > t.opts.compressionMinSize)
-	}
-	var messageType = websocket.TextMessage
-	if t.Protocol() == centrifuge.ProtocolTypeProtobuf {
-		messageType = websocket.BinaryMessage
-	}
+func (t *websocketTransport) writeData(data []byte) error { _ = "STUB: not implemented"; return nil }
 
-	t.writeMu.Lock()
-	if t.opts.writeTimeout > 0 {
-		_ = t.conn.SetWriteDeadline(time.Now().Add(t.opts.writeTimeout))
-	}
-	err := t.conn.WriteMessage(messageType, data)
-	if err != nil {
-		t.writeMu.Unlock()
-		return err
-	}
-	if t.opts.writeTimeout > 0 {
-		_ = t.conn.SetWriteDeadline(time.Time{})
-	}
-	t.writeMu.Unlock()
-
-	return nil
-}
-
-func (t *websocketTransport) Write(message []byte) error {
-	return t.WriteMany(message)
-}
+func (t *websocketTransport) Write(message []byte) error { _ = "STUB: not implemented"; return nil }
 
 func (t *websocketTransport) WriteMany(messages ...[]byte) error {
-	select {
-	case <-t.closeCh:
-		return nil
-	default:
-		for i := 0; i < len(messages); i++ {
-			err := t.writeData(messages[i])
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 const closeFrameWait = 5 * time.Second
 
 // Close closes transport.
 func (t *websocketTransport) Close(_ centrifuge.Disconnect) error {
-	t.mu.Lock()
-	if t.closed {
-		t.mu.Unlock()
-		return nil
-	}
-	t.closed = true
-	if t.pingTimer != nil {
-		t.pingTimer.Stop()
-	}
-	close(t.closeCh)
-	t.mu.Unlock()
-	return t.conn.Close()
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Defaults.
@@ -412,25 +298,8 @@ var writeBufferPool = &sync.Pool{}
 
 // NewWebsocketHandler creates new WebsocketHandler.
 func NewWebsocketHandler(n *centrifuge.Node, c WebsocketConfig) *WebsocketHandler {
-	upgrade := &websocket.Upgrader{
-		ReadBufferSize:    c.ReadBufferSize,
-		EnableCompression: c.Compression,
-	}
-	if c.UseWriteBufferPool {
-		upgrade.WriteBufferPool = writeBufferPool
-	} else {
-		upgrade.WriteBufferSize = c.WriteBufferSize
-	}
-	if c.CheckOrigin != nil {
-		upgrade.CheckOrigin = c.CheckOrigin
-	} else {
-		upgrade.CheckOrigin = sameHostOriginCheck()
-	}
-	return &WebsocketHandler{
-		node:    n,
-		config:  c,
-		upgrade: upgrade,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type ConnectRequest struct {
@@ -448,149 +317,14 @@ type SubscribeRequest struct {
 }
 
 func (s *WebsocketHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	compression := s.config.Compression
-	compressionLevel := s.config.CompressionLevel
-	compressionMinSize := s.config.CompressionMinSize
-
-	conn, err := s.upgrade.Upgrade(rw, r, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	if compression {
-		err := conn.SetCompressionLevel(compressionLevel)
-		if err != nil {
-			log.Printf("error setting compression level: %v", err)
-		}
-	}
-
-	pingInterval := s.config.PingInterval
-	if pingInterval == 0 {
-		pingInterval = DefaultWebsocketPingInterval
-	}
-	writeTimeout := s.config.WriteTimeout
-	if writeTimeout == 0 {
-		writeTimeout = DefaultWebsocketWriteTimeout
-	}
-	messageSizeLimit := s.config.MessageSizeLimit
-	if messageSizeLimit == 0 {
-		messageSizeLimit = DefaultWebsocketMessageSizeLimit
-	}
-
-	if messageSizeLimit > 0 {
-		conn.SetReadLimit(int64(messageSizeLimit))
-	}
-	if pingInterval > 0 {
-		pongWait := pingInterval * 10 / 9
-		_ = conn.SetReadDeadline(time.Now().Add(pongWait))
-		conn.SetPongHandler(func(string) error {
-			_ = conn.SetReadDeadline(time.Now().Add(pongWait))
-			return nil
-		})
-	}
-
-	// Separate goroutine for better GC of caller's data.
-	go func() {
-		opts := websocketTransportOptions{
-			pingInterval:       pingInterval,
-			writeTimeout:       writeTimeout,
-			compressionMinSize: compressionMinSize,
-			protoType:          centrifuge.ProtocolTypeJSON,
-		}
-
-		graceCh := make(chan struct{})
-		transport := newWebsocketTransport(conn, opts, graceCh)
-
-		select {
-		case <-s.node.NotifyShutdown():
-			_ = transport.Close(centrifuge.DisconnectShutdown)
-			return
-		default:
-		}
-
-		ctxCh := make(chan struct{})
-		defer close(ctxCh)
-
-		c, closeFn, err := centrifuge.NewClient(cancelctx.New(r.Context(), ctxCh), s.node, transport)
-		if err != nil {
-			log.Printf("error creating client: %v", err)
-			return
-		}
-		defer func() { _ = closeFn() }()
-
-		_, data, err := conn.ReadMessage()
-		if err != nil {
-			return
-		}
-
-		var req ConnectRequest
-		err = json.Unmarshal(data, &req)
-		if err != nil {
-			return
-		}
-
-		connectRequest := centrifuge.ConnectRequest{
-			Token:   req.Token,
-			Data:    req.Data,
-			Name:    req.Name,
-			Version: req.Version,
-		}
-		if req.Subs != nil {
-			subs := make(map[string]centrifuge.SubscribeRequest)
-			for k, v := range connectRequest.Subs {
-				subs[k] = centrifuge.SubscribeRequest{
-					Recover: v.Recover,
-					Offset:  v.Offset,
-					Epoch:   v.Epoch,
-				}
-			}
-		}
-
-		c.Connect(connectRequest)
-
-		for {
-			_, _, err := conn.ReadMessage()
-			if err != nil {
-				break
-			}
-		}
-
-		// https://github.com/gorilla/websocket/issues/448
-		conn.SetPingHandler(nil)
-		conn.SetPongHandler(nil)
-		conn.SetCloseHandler(nil)
-		_ = conn.SetReadDeadline(time.Now().Add(closeFrameWait))
-		for {
-			if _, _, err := conn.NextReader(); err != nil {
-				close(graceCh)
-				break
-			}
-		}
-	}()
+	_ = "STUB: not implemented"
+	return
 }
 
-func sameHostOriginCheck() func(r *http.Request) bool {
-	return func(r *http.Request) bool {
-		err := checkSameHost(r)
-		if err != nil {
-			return false
-		}
-		return true
-	}
-}
+// Separate goroutine for better GC of caller's data.
 
-func checkSameHost(r *http.Request) error {
-	origin := r.Header.Get("Origin")
-	if origin == "" {
-		return nil
-	}
-	u, err := url.Parse(origin)
-	if err != nil {
-		return fmt.Errorf("failed to parse Origin header %q: %w", origin, err)
-	}
-	if strings.EqualFold(r.Host, u.Host) {
-		return nil
-	}
-	return fmt.Errorf("request Origin %q is not authorized for Host %q", origin, r.Host)
-}
+// https://github.com/gorilla/websocket/issues/448
+
+func sameHostOriginCheck() func(r *http.Request) bool { _ = "STUB: not implemented"; return nil }
+
+func checkSameHost(r *http.Request) error { _ = "STUB: not implemented"; return nil }

@@ -1,9 +1,5 @@
 package centrifuge
 
-import (
-	"fmt"
-)
-
 // Disconnect allows configuring how client will be disconnected from a server.
 // A server can provide a Disconnect.Code and Disconnect.Reason to a client. Clients
 // can execute some custom logic based on a certain Disconnect.Code. Code is also
@@ -36,21 +32,21 @@ type Disconnect struct {
 }
 
 // String representation.
-func (d Disconnect) String() string {
-	return fmt.Sprintf("code: %d, reason: %s", d.Code, d.Reason)
-}
+func (d Disconnect) String() string { _ = "STUB: not implemented"; return "" }
 
 // Error to use Disconnect as a callback handler error to signal Centrifuge
 // that client must be disconnected with corresponding Code and Reason.
 func (d Disconnect) Error() string {
-	return d.String()
+	_ = "STUB: not implemented"
+
+	// DisconnectConnectionClosed is a special Disconnect object used when
+	// client connection was closed without any advice from a server side.
+	// This can be a clean disconnect, or temporary disconnect of the client
+	// due to internet connection loss. Server can not distinguish the actual
+	// reason of disconnect.
+	return ""
 }
 
-// DisconnectConnectionClosed is a special Disconnect object used when
-// client connection was closed without any advice from a server side.
-// This can be a clean disconnect, or temporary disconnect of the client
-// due to internet connection loss. Server can not distinguish the actual
-// reason of disconnect.
 var DisconnectConnectionClosed = Disconnect{
 	Code:   3000,
 	Reason: "connection closed",

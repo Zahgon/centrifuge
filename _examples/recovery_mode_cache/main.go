@@ -1,16 +1,12 @@
 package main
 
 import (
-	"context"
 	"errors"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
 	"strconv"
-	"syscall"
 	"time"
 
 	_ "net/http/pprof"
@@ -20,43 +16,20 @@ import (
 
 var port = flag.Int("port", 8000, "Port to bind app to")
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("%s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 func authMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		newCtx := centrifuge.SetCredentials(ctx, &centrifuge.Credentials{
-			UserID: "",
-		})
-		r = r.WithContext(newCtx)
-		h.ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
-func waitExitSignal(n *centrifuge.Node, s *http.Server) {
-	sigCh := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		_ = n.Shutdown(ctx)
-		_ = s.Shutdown(ctx)
-		done <- true
-	}()
-	<-done
-}
+func waitExitSignal(n *centrifuge.Node, s *http.Server) { _ = "STUB: not implemented"; return }
 
 const exampleChannel = "speed"
 
 // Check whether channel is allowed for subscribing. In real case permission
 // check will probably be more complex than in this example.
-func channelSubscribeAllowed(channel string) bool {
-	return channel == exampleChannel
-}
+func channelSubscribeAllowed(channel string) bool { _ = "STUB: not implemented"; return false }
 
 func main() {
 	node, _ := centrifuge.New(centrifuge.Config{

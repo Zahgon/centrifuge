@@ -2,14 +2,10 @@ package centrifuge
 
 import (
 	"errors"
-	"io"
 	"sync"
 	"time"
 
 	"github.com/centrifugal/centrifuge/internal/queue"
-	"github.com/centrifugal/centrifuge/internal/timers"
-
-	"github.com/centrifugal/protocol"
 )
 
 var errNoSubscription = errors.New("no subscription to a channel")
@@ -19,54 +15,8 @@ var errNoSubscription = errors.New("no subscription to a channel")
 // to a channel into an individual data stream.
 // This API is EXPERIMENTAL and may be changed/removed.
 func (c *Client) WritePublication(channel string, publication *Publication, sp StreamPosition) error {
-	if !c.IsSubscribed(channel) {
-		return errNoSubscription
-	}
-
-	pub := pubToProto(publication)
-	protoType := c.transport.Protocol().toProto()
-
-	if protoType == protocol.TypeJSON {
-		if c.transport.Unidirectional() {
-			push := &protocol.Push{Channel: channel, Pub: pub}
-			var err error
-			jsonPush, err := protocol.DefaultJsonPushEncoder.Encode(push)
-			if err != nil {
-				go func(c *Client) { c.Disconnect(DisconnectInappropriateProtocol) }(c)
-				return err
-			}
-			return c.writePublicationNoDelta(channel, pub, jsonPush, sp, c.node.getBatchConfig(channel))
-		} else {
-			push := &protocol.Push{Channel: channel, Pub: pub}
-			var err error
-			jsonReply, err := protocol.DefaultJsonReplyEncoder.Encode(&protocol.Reply{Push: push})
-			if err != nil {
-				go func(c *Client) { c.Disconnect(DisconnectInappropriateProtocol) }(c)
-				return err
-			}
-			return c.writePublicationNoDelta(channel, pub, jsonReply, sp, c.node.getBatchConfig(channel))
-		}
-	} else if protoType == protocol.TypeProtobuf {
-		if c.transport.Unidirectional() {
-			push := &protocol.Push{Channel: channel, Pub: pub}
-			var err error
-			protobufPush, err := protocol.DefaultProtobufPushEncoder.Encode(push)
-			if err != nil {
-				return err
-			}
-			return c.writePublicationNoDelta(channel, pub, protobufPush, sp, c.node.getBatchConfig(channel))
-		} else {
-			push := &protocol.Push{Channel: channel, Pub: pub}
-			var err error
-			protobufReply, err := protocol.DefaultProtobufReplyEncoder.Encode(&protocol.Reply{Push: push})
-			if err != nil {
-				return err
-			}
-			return c.writePublicationNoDelta(channel, pub, protobufReply, sp, c.node.getBatchConfig(channel))
-		}
-	}
-
-	return errors.New("unknown protocol type")
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // AcquireStorage returns an attached connection storage (a map) and a function to be
@@ -80,41 +30,22 @@ func (c *Client) WritePublication(channel string, publication *Publication, sp S
 // lifetime of connection. Try to keep this map reasonably small.
 // This API is EXPERIMENTAL and may be changed/removed.
 func (c *Client) AcquireStorage() (map[string]any, func(map[string]any)) {
-	c.storageMu.Lock()
-	if c.storage == nil {
-		c.storage = map[string]any{}
-	}
-	return c.storage, func(updatedStorage map[string]any) {
-		c.storage = updatedStorage
-		c.storageMu.Unlock()
-	}
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // OnStateSnapshot allows settings StateSnapshotHandler.
 // This API is EXPERIMENTAL and may be changed/removed.
-func (c *Client) OnStateSnapshot(h StateSnapshotHandler) {
-	c.eventHub.stateSnapshotHandler = h
-}
+func (c *Client) OnStateSnapshot(h StateSnapshotHandler) { _ = "STUB: not implemented"; return }
 
 // StateSnapshot allows collecting current state copy.
 // Mostly useful for connection introspection from the outside.
 // This API is EXPERIMENTAL and may be changed/removed.
-func (c *Client) StateSnapshot() (any, error) {
-	if c.eventHub.stateSnapshotHandler != nil {
-		return c.eventHub.stateSnapshotHandler()
-	}
-	return nil, nil
-}
+func (c *Client) StateSnapshot() (any, error) { _ = "STUB: not implemented"; return *new(any), nil }
 
-func (c *Client) writeQueueItems(items []queue.Item) error {
-	disconnect := c.messageWriter.enqueueMany(items...)
-	if disconnect != nil {
-		// close in goroutine to not block message broadcast.
-		go func() { _ = c.close(*disconnect) }()
-		return io.EOF
-	}
-	return nil
-}
+func (c *Client) writeQueueItems(items []queue.Item) error { _ = "STUB: not implemented"; return nil }
+
+// close in goroutine to not block message broadcast.
 
 // ChannelBatchConfig allows configuring how to write push messages to a channel
 // during broadcasts (applied for publication, join and leave pushes).
@@ -149,23 +80,12 @@ type channelWriter struct {
 
 // newChannelWriter creates a new channelWriter with the given flush callback.
 func newChannelWriter(flushFn func([]queue.Item) error) *channelWriter {
-	return &channelWriter{flushFn: flushFn}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // close stops the timer and optionally flushes remaining items.
-func (w *channelWriter) close(flushRemaining bool) {
-	w.mu.Lock()
-	if w.timer != nil {
-		w.timer.Stop()
-		w.timer = nil
-	}
-	if flushRemaining && (len(w.buffer) > 0 || len(w.latestPubs) > 0) {
-		w.flushLocked()
-	}
-	w.buffer = nil
-	w.latestPubs = nil
-	w.mu.Unlock()
-}
+func (w *channelWriter) close(flushRemaining bool) { _ = "STUB: not implemented"; return }
 
 // Add appends an item to the buffer or records it as the latest publication per key.
 // When FlushLatestPublication is enabled, publications are coalesced by key — only the
@@ -173,83 +93,40 @@ func (w *channelWriter) close(flushRemaining bool) {
 // into a single entry. Items are ordered by last-update time so offsets stay ascending.
 // It starts a delay timer if this is the first item, and flushes immediately if the batch size is reached.
 func (w *channelWriter) Add(item queue.Item, config ChannelBatchConfig) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-	w.latestOnly = config.FlushLatestPublication
-
-	if config.FlushLatestPublication && item.FrameType == protocol.FrameTypePushPublication {
-		// Remove existing entry with the same key (if any) to maintain offset order.
-		for i, existing := range w.latestPubs {
-			if existing.Key == item.Key {
-				w.latestPubs = append(w.latestPubs[:i], w.latestPubs[i+1:]...)
-				break
-			}
-		}
-		// Append to the end — latest update has the highest offset.
-		w.latestPubs = append(w.latestPubs, item)
-	} else {
-		w.buffer = append(w.buffer, item)
-	}
-
-	// Total items count includes all latest pubs.
-	totalCount := len(w.buffer) + len(w.latestPubs)
-
-	// Start timer on first item.
-	if config.MaxDelay > 0 && totalCount == 1 && w.timer == nil {
-		w.timer = timers.AcquireTimer(config.MaxDelay)
-		go w.waitTimer(w.timer)
-	}
-
-	// Flush immediately if batch size is reached.
-	if config.MaxSize > 0 && int64(totalCount) >= config.MaxSize {
-		if w.timer != nil {
-			w.timer.Stop()
-			w.timer = nil // Set timer to nil so waitTimer knows it was cancelled.
-		}
-		w.flushLocked()
-	}
+	_ = "STUB: not implemented"
+	return
 }
+
+// Remove existing entry with the same key (if any) to maintain offset order.
+
+// Append to the end — latest update has the highest offset.
+
+// Total items count includes all latest pubs.
+
+// Start timer on first item.
+
+// Flush immediately if batch size is reached.
+
+// Set timer to nil so waitTimer knows it was cancelled.
 
 // waitTimer waits for the timer to fire, then flushes the batch.
 func (w *channelWriter) waitTimer(tm *time.Timer) {
-	<-tm.C // Wait for the timer to fire.
-	timers.ReleaseTimer(tm)
-	w.mu.Lock()
-
-	// If timer was stopped, do nothing.
-	if w.timer == nil {
-		w.mu.Unlock()
-		return
-	}
-
-	// Flush if any items exist.
-	if len(w.buffer) > 0 || len(w.latestPubs) > 0 {
-		w.flushLocked()
-	}
-	w.timer = nil // Mark the timer as no longer active.
-	w.mu.Unlock()
+	_ = "STUB: not implemented"
+	// Wait for the timer to fire.
+	return
 }
+
+// If timer was stopped, do nothing.
+
+// Flush if any items exist.
+
+// Mark the timer as no longer active.
 
 // flushLocked flushes the current batch. Caller must hold the lock.
-func (w *channelWriter) flushLocked() {
-	if len(w.buffer) == 0 && len(w.latestPubs) == 0 {
-		return
-	}
+func (w *channelWriter) flushLocked() { _ = "STUB: not implemented"; return }
 
-	var batch []queue.Item
-	if w.latestOnly && len(w.latestPubs) > 0 {
-		// Emit non-publication items first, then per-key latest publications
-		// in last-updated order (ascending offsets).
-		batch = append(batch, w.buffer...)
-		batch = append(batch, w.latestPubs...)
-	} else {
-		batch = w.buffer
-	}
-
-	w.buffer = w.buffer[:0]
-	w.latestPubs = w.latestPubs[:0]
-	_ = w.flushFn(batch)
-}
+// Emit non-publication items first, then per-key latest publications
+// in last-updated order (ascending offsets).
 
 // perChannelWriter groups items by configuration (batch size and delay).
 type perChannelWriter struct {
@@ -260,54 +137,31 @@ type perChannelWriter struct {
 
 // newPerChannelWriter creates a new channel writer.
 func newPerChannelWriter(flushFn func([]queue.Item) error) *perChannelWriter {
-	return &perChannelWriter{
-		writers: make(map[string]*channelWriter),
-		flushFn: flushFn,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Close cancels all active timers in each channelWriter and discards any pending items.
-func (pcw *perChannelWriter) Close(flushRemaining bool) {
-	pcw.mu.Lock()
-	defer pcw.mu.Unlock()
-	for _, w := range pcw.writers {
-		w.close(flushRemaining)
-	}
-}
+func (pcw *perChannelWriter) Close(flushRemaining bool) { _ = "STUB: not implemented"; return }
 
 // getWriter returns the channelWriter for the given channel's configuration,
 // creating one if necessary.
 func (pcw *perChannelWriter) getWriter(channel string) *channelWriter {
-	pcw.mu.RLock()
-	w, exists := pcw.writers[channel]
-	pcw.mu.RUnlock()
-	if !exists {
-		pcw.mu.Lock()
-		// Double-check existence after acquiring write lock.
-		w, exists = pcw.writers[channel]
-		if !exists {
-			w = newChannelWriter(pcw.flushFn)
-			pcw.writers[channel] = w
-		}
-		pcw.mu.Unlock()
-	}
-	return w
+	_ = "STUB: not implemented"
+	return nil
 }
 
+// Double-check existence after acquiring write lock.
+
 func (pcw *perChannelWriter) delWriter(channel string, flushRemaining bool) {
-	pcw.mu.Lock()
-	w, exists := pcw.writers[channel]
-	if exists {
-		w.close(flushRemaining)
-		delete(pcw.writers, channel)
-	}
-	pcw.mu.Unlock()
+	_ = "STUB: not implemented"
+	return
 }
 
 // Add routes an item to its configuration-specific aggregator.
 func (pcw *perChannelWriter) Add(item queue.Item, ch string, config ChannelBatchConfig) {
-	w := pcw.getWriter(ch)
-	w.Add(item, config)
+	_ = "STUB: not implemented"
+	return
 }
 
 // TimerCanceler is the interface returned from ScheduleTimer which allows the task to be cancelled.

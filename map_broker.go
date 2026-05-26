@@ -2,9 +2,6 @@ package centrifuge
 
 import (
 	"context"
-	"errors"
-	"sort"
-	"strconv"
 	"time"
 )
 
@@ -391,114 +388,41 @@ type MapClearOptions struct{}
 // for a channel. Returns an error if the resolver is nil, Mode is not set,
 // or the configuration is invalid. Auto-derives stream defaults for stream-backed modes.
 func ResolveAndValidateMapChannelOptions(resolver func(channel string) MapChannelOptions, channel string) (MapChannelOptions, error) {
-	if resolver == nil {
-		return MapChannelOptions{}, errors.New("map channel options resolver not configured")
-	}
-
-	opts := resolver(channel)
-
-	// Validate mode.
-	if opts.Mode == 0 {
-		return MapChannelOptions{}, errors.New("map channel not configured: set Mode")
-	}
-	if opts.Mode != MapModeEphemeral && opts.Mode != MapModeRecoverable && opts.Mode != MapModePersistent {
-		return MapChannelOptions{}, errors.New("invalid Mode value")
-	}
-
-	// Validate expiry/TTL.
-	if opts.Mode.HasExpiry() {
-		if opts.KeyTTL == 0 {
-			return MapChannelOptions{}, errors.New("KeyTTL required for mode with expiry")
-		}
-		if opts.KeyTTL < 0 {
-			return MapChannelOptions{}, errors.New("KeyTTL must be positive")
-		}
-	}
-	if !opts.Mode.HasExpiry() {
-		if opts.KeyTTL != 0 {
-			return MapChannelOptions{}, errors.New("KeyTTL must be 0 for persistent mode (entries don't expire)")
-		}
-	}
-
-	// Validate stream fields.
-	if opts.Mode.IsEphemeral() {
-		if opts.StreamSize > 0 {
-			return MapChannelOptions{}, errors.New("StreamSize requires recoverable or persistent mode")
-		}
-		if opts.StreamTTL > 0 {
-			return MapChannelOptions{}, errors.New("StreamTTL requires recoverable or persistent mode")
-		}
-		if opts.MetaTTL > 0 {
-			return MapChannelOptions{}, errors.New("MetaTTL requires recoverable or persistent mode")
-		}
-	}
-	if opts.Mode.HasStream() {
-		if opts.StreamSize < 0 {
-			return MapChannelOptions{}, errors.New("StreamSize must be non-negative")
-		}
-		if opts.StreamTTL < 0 {
-			return MapChannelOptions{}, errors.New("StreamTTL must be non-negative")
-		}
-		if opts.MetaTTL < 0 {
-			return MapChannelOptions{}, errors.New("MetaTTL must be non-negative")
-		}
-		// Auto-derive defaults for stream-backed modes.
-		if opts.StreamSize == 0 {
-			opts.StreamSize = 100
-		}
-		if opts.StreamTTL == 0 {
-			opts.StreamTTL = time.Minute
-		}
-		// Auto-derive MetaTTL.
-		if opts.MetaTTL == 0 {
-			if opts.Mode.HasExpiry() {
-				opts.MetaTTL = opts.StreamTTL * 10
-				// Ensure auto-derived MetaTTL is at least KeyTTL.
-				if opts.KeyTTL > 0 && opts.MetaTTL < opts.KeyTTL {
-					opts.MetaTTL = opts.KeyTTL
-				}
-			}
-			// For Persistent, MetaTTL stays 0 (permanent).
-		}
-		// Validate MetaTTL >= StreamTTL when both explicit.
-		if opts.MetaTTL > 0 && opts.MetaTTL < opts.StreamTTL {
-			return MapChannelOptions{}, errors.New("MetaTTL must be >= StreamTTL (metadata must outlive stream)")
-		}
-		// Validate MetaTTL >= KeyTTL. When KeyTTL is 0 (permanent keys),
-		// MetaTTL must also be 0 (permanent) — metadata can't expire
-		// before keys that never expire.
-		if opts.MetaTTL > 0 && opts.KeyTTL == 0 {
-			return MapChannelOptions{}, errors.New("MetaTTL must be 0 (permanent) when KeyTTL is 0 (permanent keys)")
-		}
-		if opts.MetaTTL > 0 && opts.KeyTTL > 0 && opts.MetaTTL < opts.KeyTTL {
-			return MapChannelOptions{}, errors.New("MetaTTL must be >= KeyTTL (metadata must outlive keys)")
-		}
-	}
-
-	return opts, nil
+	_ = "STUB: not implemented"
+	return *new(MapChannelOptions), nil
 }
+
+// Validate mode.
+
+// Validate expiry/TTL.
+
+// Validate stream fields.
+
+// Auto-derive defaults for stream-backed modes.
+
+// Auto-derive MetaTTL.
+
+// Ensure auto-derived MetaTTL is at least KeyTTL.
+
+// For Persistent, MetaTTL stays 0 (permanent).
+
+// Validate MetaTTL >= StreamTTL when both explicit.
+
+// Validate MetaTTL >= KeyTTL. When KeyTTL is 0 (permanent keys),
+// MetaTTL must also be 0 (permanent) — metadata can't expire
+// before keys that never expire.
 
 // MakeOrderedCursor creates a cursor for ordered state: "score\x00key".
-func MakeOrderedCursor(score, key string) string {
-	return score + "\x00" + key
-}
+func MakeOrderedCursor(score, key string) string { _ = "STUB: not implemented"; return "" }
 
 // parseOrderedCursor parses an ordered cursor into score and key strings.
-func parseOrderedCursor(cursor string) (string, string) {
-	for i := 0; i < len(cursor); i++ {
-		if cursor[i] == '\x00' {
-			return cursor[:i], cursor[i+1:]
-		}
-	}
-	return "", ""
-}
+func parseOrderedCursor(cursor string) (string, string) { _ = "STUB: not implemented"; return "", "" }
 
 // findUnorderedCursorPosition finds the position after the cursor key using binary search.
 // Returns the index of the first key > cursor in a sorted slice.
 func findUnorderedCursorPosition(sortedKeys []string, cursor string) int {
-	return sort.Search(len(sortedKeys), func(i int) bool {
-		return sortedKeys[i] > cursor
-	})
+	_ = "STUB: not implemented"
+	return 0
 }
 
 // findOrderedCursorPosition finds the position after the cursor (score, key) in ordered state.
@@ -508,21 +432,6 @@ func findUnorderedCursorPosition(sortedKeys []string, cursor string) int {
 // For ASC (asc=true), sorted by (score ASC, key ASC), finds first entry where:
 //   - score > cursorScore, OR score == cursorScore AND key > cursorKey
 func findOrderedCursorPosition(sortedKeys []string, scores map[string]int64, cursor string, asc bool) int {
-	cursorScoreStr, cursorKey := parseOrderedCursor(cursor)
-	cursorScore, _ := strconv.ParseInt(cursorScoreStr, 10, 64)
-
-	return sort.Search(len(sortedKeys), func(i int) bool {
-		key := sortedKeys[i]
-		score := scores[key]
-		if score != cursorScore {
-			if asc {
-				return score > cursorScore
-			}
-			return score < cursorScore
-		}
-		if asc {
-			return key > cursorKey
-		}
-		return key < cursorKey
-	})
+	_ = "STUB: not implemented"
+	return 0
 }

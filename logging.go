@@ -36,9 +36,7 @@ var levelToString = map[LogLevel]string{
 }
 
 // LogLevelToString transforms Level to its string representation.
-func LogLevelToString(l LogLevel) string {
-	return levelToString[l]
-}
+func LogLevelToString(l LogLevel) string { _ = "STUB: not implemented"; return "" }
 
 // LogEntry represents log entry.
 type LogEntry struct {
@@ -50,43 +48,26 @@ type LogEntry struct {
 
 // buildLogEntry helps to create Entry.
 func buildLogEntry(level LogLevel, err error, message string, fields map[string]any) LogEntry {
-	var f map[string]any
-	if err != nil {
-		f = make(map[string]any, len(fields)+1)
-		for k, v := range fields {
-			f[k] = v
-		}
-		f["error"] = err.Error()
-	} else {
-		f = fields
-	}
-	return LogEntry{
-		Level:   level,
-		Message: message,
-		Fields:  f,
-		Error:   err,
-	}
+	_ = "STUB: not implemented"
+	return *new(LogEntry)
 }
 
 // newLogEntry creates new LogEntry.
 func newLogEntry(level LogLevel, message string, fields map[string]any) LogEntry {
-	return buildLogEntry(level, nil, message, fields)
+	_ = "STUB: not implemented"
+	return *new(LogEntry)
 }
 
 // newErrorLogEntry creates new LogEntry with LogLevelError and error attached to it.
 func newErrorLogEntry(err error, message string, fields map[string]any) LogEntry {
-	return buildLogEntry(LogLevelError, err, message, fields)
+	_ = "STUB: not implemented"
+	return *new(LogEntry)
 }
 
 // LogHandler handles log entries - i.e. writes into correct destination if necessary.
 type LogHandler func(LogEntry)
 
-func newLogger(level LogLevel, handler LogHandler) *logger {
-	return &logger{
-		level:   level,
-		handler: handler,
-	}
-}
+func newLogger(level LogLevel, handler LogHandler) *logger { _ = "STUB: not implemented"; return nil }
 
 // logger can log entries.
 type logger struct {
@@ -95,19 +76,7 @@ type logger struct {
 }
 
 // log calls log handler with provided LogEntry.
-func (l *logger) log(entry LogEntry) {
-	if l == nil {
-		return
-	}
-	if l.enabled(entry.Level) {
-		l.handler(entry)
-	}
-}
+func (l *logger) log(entry LogEntry) { _ = "STUB: not implemented"; return }
 
 // enabled says whether specified Level enabled or not.
-func (l *logger) enabled(level LogLevel) bool {
-	if l == nil {
-		return false
-	}
-	return level >= l.level && l.level != LogLevelNone
-}
+func (l *logger) enabled(level LogLevel) bool { _ = "STUB: not implemented"; return false }

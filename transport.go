@@ -8,7 +8,8 @@ import (
 type ProtocolType string
 
 func (t ProtocolType) toProto() protocol.Type {
-	return protocol.Type(t)
+	_ = "STUB: not implemented"
+	return *new(protocol.Type)
 }
 
 const (

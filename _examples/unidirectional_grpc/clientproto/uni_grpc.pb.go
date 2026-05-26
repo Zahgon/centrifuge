@@ -4,9 +4,8 @@ package clientproto
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -26,22 +25,13 @@ type centrifugeUniClient struct {
 }
 
 func NewCentrifugeUniClient(cc grpc.ClientConnInterface) CentrifugeUniClient {
-	return &centrifugeUniClient{cc}
+	_ = "STUB: not implemented"
+	return *new(CentrifugeUniClient)
 }
 
 func (c *centrifugeUniClient) Consume(ctx context.Context, in *ConnectRequest, opts ...grpc.CallOption) (CentrifugeUni_ConsumeClient, error) {
-	stream, err := c.cc.NewStream(ctx, &CentrifugeUni_ServiceDesc.Streams[0], "/protocol.CentrifugeUni/Consume", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &centrifugeUniConsumeClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
+	_ = "STUB: not implemented"
+	return *new(CentrifugeUni_ConsumeClient), nil
 }
 
 type CentrifugeUni_ConsumeClient interface {
@@ -54,11 +44,8 @@ type centrifugeUniConsumeClient struct {
 }
 
 func (x *centrifugeUniConsumeClient) Recv() (*Push, error) {
-	m := new(Push)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // CentrifugeUniServer is the server API for CentrifugeUni service.
@@ -74,27 +61,31 @@ type UnimplementedCentrifugeUniServer struct {
 }
 
 func (UnimplementedCentrifugeUniServer) Consume(*ConnectRequest, CentrifugeUni_ConsumeServer) error {
-	return status.Errorf(codes.Unimplemented, "method Consume not implemented")
+	_ = "STUB: not implemented"
+	return nil
 }
-func (UnimplementedCentrifugeUniServer) mustEmbedUnimplementedCentrifugeUniServer() {}
 
-// UnsafeCentrifugeUniServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to CentrifugeUniServer will
-// result in compilation errors.
+func (UnimplementedCentrifugeUniServer) mustEmbedUnimplementedCentrifugeUniServer() {
+	_ = "STUB: not implemented"
+
+	// UnsafeCentrifugeUniServer may be embedded to opt out of forward compatibility for this service.
+	// Use of this interface is not recommended, as added methods to CentrifugeUniServer will
+	// result in compilation errors.
+	return
+}
+
 type UnsafeCentrifugeUniServer interface {
 	mustEmbedUnimplementedCentrifugeUniServer()
 }
 
 func RegisterCentrifugeUniServer(s grpc.ServiceRegistrar, srv CentrifugeUniServer) {
-	s.RegisterService(&CentrifugeUni_ServiceDesc, srv)
+	_ = "STUB: not implemented"
+	return
 }
 
 func _CentrifugeUni_Consume_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(ConnectRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(CentrifugeUniServer).Consume(m, &centrifugeUniConsumeServer{stream})
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type CentrifugeUni_ConsumeServer interface {
@@ -106,9 +97,7 @@ type centrifugeUniConsumeServer struct {
 	grpc.ServerStream
 }
 
-func (x *centrifugeUniConsumeServer) Send(m *Push) error {
-	return x.ServerStream.SendMsg(m)
-}
+func (x *centrifugeUniConsumeServer) Send(m *Push) error { _ = "STUB: not implemented"; return nil }
 
 // CentrifugeUni_ServiceDesc is the grpc.ServiceDesc for CentrifugeUni service.
 // It's only intended for direct use with grpc.RegisterService,

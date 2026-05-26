@@ -2,69 +2,37 @@ package filter
 
 import "github.com/centrifugal/protocol"
 
-func Eq(key, val string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareEQ, Val: val}
-}
+func Eq(key, val string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func Neq(key, val string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareNotEQ, Val: val}
-}
+func Neq(key, val string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func In(key string, vals ...string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareIn, Vals: vals}
-}
+func In(key string, vals ...string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func Nin(key string, vals ...string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareNotIn, Vals: vals}
-}
+func Nin(key string, vals ...string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func Gt(key, val string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareGT, Val: val}
-}
+func Gt(key, val string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func Gte(key, val string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareGTE, Val: val}
-}
+func Gte(key, val string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func Lt(key, val string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareLT, Val: val}
-}
+func Lt(key, val string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func Lte(key, val string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareLTE, Val: val}
-}
+func Lte(key, val string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func Contains(key, val string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareContains, Val: val}
-}
+func Contains(key, val string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func Starts(key, val string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareStartsWith, Val: val}
-}
+func Starts(key, val string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func Ends(key, val string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareEndsWith, Val: val}
-}
+func Ends(key, val string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func Exists(key string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareExists}
-}
+func Exists(key string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
-func NotExists(key string) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: "", Key: key, Cmp: CompareNotExists}
-}
+func NotExists(key string) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
 // And combines multiple FilterNode children with logical AND
-func And(nodes ...*protocol.FilterNode) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: OpAnd, Nodes: nodes}
-}
+func And(nodes ...*protocol.FilterNode) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
 // Or combines multiple FilterNode children with logical OR
-func Or(nodes ...*protocol.FilterNode) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: OpOr, Nodes: nodes}
-}
+func Or(nodes ...*protocol.FilterNode) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }
 
 // Not negates a single FilterNode
-func Not(node *protocol.FilterNode) *protocol.FilterNode {
-	return &protocol.FilterNode{Op: OpNot, Nodes: []*protocol.FilterNode{node}}
-}
+func Not(node *protocol.FilterNode) *protocol.FilterNode { _ = "STUB: not implemented"; return nil }

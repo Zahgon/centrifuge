@@ -2,15 +2,9 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"log"
-	"math/rand"
 	"net/http"
-	"os"
-	"os/signal"
 	"sync"
-	"syscall"
-	"time"
 
 	_ "net/http/pprof"
 
@@ -39,40 +33,20 @@ var (
 	counterLock sync.RWMutex
 )
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("%s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 const exampleChannel = "counter"
 
 // Check whether channel is allowed for subscribing. In real case permission
 // check will probably be more complex than in this example.
-func channelSubscribeAllowed(channel string) bool {
-	return channel == exampleChannel
-}
+func channelSubscribeAllowed(channel string) bool { _ = "STUB: not implemented"; return false }
 
 func authMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		newCtx := centrifuge.SetCredentials(ctx, &centrifuge.Credentials{
-			UserID: "42",
-		})
-		r = r.WithContext(newCtx)
-		h.ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
-func waitExitSignal(n *centrifuge.Node) {
-	sigCh := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		_ = n.Shutdown(context.Background())
-		done <- true
-	}()
-	<-done
-}
+func waitExitSignal(n *centrifuge.Node) { _ = "STUB: not implemented"; return }
 
 func main() {
 	node, _ := centrifuge.New(centrifuge.Config{
@@ -137,41 +111,22 @@ func main() {
 }
 
 func getCounterHandler(w http.ResponseWriter, _ *http.Request) {
+	_ = "STUB: not implemented"
 	// Emulate delay to ensure data is still synchronized properly and only necessary updates are handled.
-	time.Sleep(time.Duration(rand.Intn(500)) * time.Millisecond)
-	counterLock.RLock()
-	defer counterLock.RUnlock()
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(counter)
+	return
 }
 
 func simulateCounterIncrease(ctx context.Context, node *centrifuge.Node) {
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		case <-time.After(250 * time.Millisecond):
-			counterLock.Lock()
-			increment := rand.Intn(10)
-			counter.Version++
-			counter.Value += increment
-			// Publishing under the lock here which is generally not good, but we want
-			// to emulate transactional outbox or CDC guarantees.
-			err := publishToChannel(node, counter.Version, increment)
-			if err != nil {
-				// Emulate transaction rollback.
-				log.Println("publish to channel error", err)
-				counter.Version--
-				counter.Value -= increment
-			}
-			counterLock.Unlock()
-		}
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
+// Publishing under the lock here which is generally not good, but we want
+// to emulate transactional outbox or CDC guarantees.
+
+// Emulate transaction rollback.
+
 func publishToChannel(node *centrifuge.Node, version int, increment int) error {
-	data, _ := json.Marshal(CounterUpdate{Version: version, Increment: increment})
-	_, err := node.Publish(exampleChannel, data,
-		centrifuge.WithHistory(20, 10*time.Second))
-	return err
+	_ = "STUB: not implemented"
+	return nil
 }

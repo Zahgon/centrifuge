@@ -44,9 +44,7 @@ var (
 	redisAddr = flag.String("redis", "", "Redis address (e.g., localhost:6379). If empty, uses in-memory map broker.")
 )
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("[centrifuge] %s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 func main() {
 	flag.Parse()

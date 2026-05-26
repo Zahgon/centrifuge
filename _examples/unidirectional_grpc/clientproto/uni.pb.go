@@ -7,10 +7,10 @@
 package clientproto
 
 import (
+	sync "sync"
+
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	reflect "reflect"
-	sync "sync"
 )
 
 const (
@@ -33,72 +33,32 @@ type ConnectRequest struct {
 	Version string                       `protobuf:"bytes,5,opt,name=version,proto3" json:"version,omitempty"`
 }
 
-func (x *ConnectRequest) Reset() {
-	*x = ConnectRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *ConnectRequest) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *ConnectRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *ConnectRequest) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*ConnectRequest) ProtoMessage() {}
+func (*ConnectRequest) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *ConnectRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use ConnectRequest.ProtoReflect.Descriptor instead.
-func (*ConnectRequest) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{0}
-}
+func (*ConnectRequest) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *ConnectRequest) GetToken() string {
-	if x != nil {
-		return x.Token
-	}
-	return ""
-}
+func (x *ConnectRequest) GetToken() string { _ = "STUB: not implemented"; return "" }
 
-func (x *ConnectRequest) GetData() []byte {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
+func (x *ConnectRequest) GetData() []byte { _ = "STUB: not implemented"; return nil }
 
 func (x *ConnectRequest) GetSubs() map[string]*SubscribeRequest {
-	if x != nil {
-		return x.Subs
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
-func (x *ConnectRequest) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
+func (x *ConnectRequest) GetName() string { _ = "STUB: not implemented"; return "" }
 
-func (x *ConnectRequest) GetVersion() string {
-	if x != nil {
-		return x.Version
-	}
-	return ""
-}
+func (x *ConnectRequest) GetVersion() string { _ = "STUB: not implemented"; return "" }
 
 type SubscribeRequest struct {
 	state         protoimpl.MessageState
@@ -111,58 +71,25 @@ type SubscribeRequest struct {
 	Offset  uint64 `protobuf:"varint,7,opt,name=offset,proto3" json:"offset,omitempty"`
 }
 
-func (x *SubscribeRequest) Reset() {
-	*x = SubscribeRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *SubscribeRequest) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *SubscribeRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *SubscribeRequest) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*SubscribeRequest) ProtoMessage() {}
+func (*SubscribeRequest) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *SubscribeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use SubscribeRequest.ProtoReflect.Descriptor instead.
-func (*SubscribeRequest) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{1}
-}
+func (*SubscribeRequest) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *SubscribeRequest) GetRecover() bool {
-	if x != nil {
-		return x.Recover
-	}
-	return false
-}
+func (x *SubscribeRequest) GetRecover() bool { _ = "STUB: not implemented"; return false }
 
-func (x *SubscribeRequest) GetEpoch() string {
-	if x != nil {
-		return x.Epoch
-	}
-	return ""
-}
+func (x *SubscribeRequest) GetEpoch() string { _ = "STUB: not implemented"; return "" }
 
-func (x *SubscribeRequest) GetOffset() uint64 {
-	if x != nil {
-		return x.Offset
-	}
-	return 0
-}
+func (x *SubscribeRequest) GetOffset() uint64 { _ = "STUB: not implemented"; return 0 }
 
 // ProtocolVersion2 uses channel and one of the possible concrete push messages.
 type Push struct {
@@ -184,107 +111,39 @@ type Push struct {
 	Refresh     *Refresh     `protobuf:"bytes,12,opt,name=refresh,proto3" json:"refresh,omitempty"`
 }
 
-func (x *Push) Reset() {
-	*x = Push{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Push) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Push) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Push) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Push) ProtoMessage() {}
+func (*Push) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Push) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Push.ProtoReflect.Descriptor instead.
-func (*Push) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{2}
-}
+func (*Push) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Push) GetChannel() string {
-	if x != nil {
-		return x.Channel
-	}
-	return ""
-}
+func (x *Push) GetChannel() string { _ = "STUB: not implemented"; return "" }
 
-func (x *Push) GetPub() *Publication {
-	if x != nil {
-		return x.Pub
-	}
-	return nil
-}
+func (x *Push) GetPub() *Publication { _ = "STUB: not implemented"; return nil }
 
-func (x *Push) GetJoin() *Join {
-	if x != nil {
-		return x.Join
-	}
-	return nil
-}
+func (x *Push) GetJoin() *Join { _ = "STUB: not implemented"; return nil }
 
-func (x *Push) GetLeave() *Leave {
-	if x != nil {
-		return x.Leave
-	}
-	return nil
-}
+func (x *Push) GetLeave() *Leave { _ = "STUB: not implemented"; return nil }
 
-func (x *Push) GetUnsubscribe() *Unsubscribe {
-	if x != nil {
-		return x.Unsubscribe
-	}
-	return nil
-}
+func (x *Push) GetUnsubscribe() *Unsubscribe { _ = "STUB: not implemented"; return nil }
 
-func (x *Push) GetMessage() *Message {
-	if x != nil {
-		return x.Message
-	}
-	return nil
-}
+func (x *Push) GetMessage() *Message { _ = "STUB: not implemented"; return nil }
 
-func (x *Push) GetSubscribe() *Subscribe {
-	if x != nil {
-		return x.Subscribe
-	}
-	return nil
-}
+func (x *Push) GetSubscribe() *Subscribe { _ = "STUB: not implemented"; return nil }
 
-func (x *Push) GetConnect() *Connect {
-	if x != nil {
-		return x.Connect
-	}
-	return nil
-}
+func (x *Push) GetConnect() *Connect { _ = "STUB: not implemented"; return nil }
 
-func (x *Push) GetDisconnect() *Disconnect {
-	if x != nil {
-		return x.Disconnect
-	}
-	return nil
-}
+func (x *Push) GetDisconnect() *Disconnect { _ = "STUB: not implemented"; return nil }
 
-func (x *Push) GetRefresh() *Refresh {
-	if x != nil {
-		return x.Refresh
-	}
-	return nil
-}
+func (x *Push) GetRefresh() *Refresh { _ = "STUB: not implemented"; return nil }
 
 type ClientInfo struct {
 	state         protoimpl.MessageState
@@ -297,65 +156,27 @@ type ClientInfo struct {
 	ChanInfo []byte `protobuf:"bytes,4,opt,name=chan_info,json=chanInfo,proto3" json:"chan_info,omitempty"`
 }
 
-func (x *ClientInfo) Reset() {
-	*x = ClientInfo{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *ClientInfo) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *ClientInfo) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *ClientInfo) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*ClientInfo) ProtoMessage() {}
+func (*ClientInfo) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *ClientInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use ClientInfo.ProtoReflect.Descriptor instead.
-func (*ClientInfo) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{3}
-}
+func (*ClientInfo) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *ClientInfo) GetUser() string {
-	if x != nil {
-		return x.User
-	}
-	return ""
-}
+func (x *ClientInfo) GetUser() string { _ = "STUB: not implemented"; return "" }
 
-func (x *ClientInfo) GetClient() string {
-	if x != nil {
-		return x.Client
-	}
-	return ""
-}
+func (x *ClientInfo) GetClient() string { _ = "STUB: not implemented"; return "" }
 
-func (x *ClientInfo) GetConnInfo() []byte {
-	if x != nil {
-		return x.ConnInfo
-	}
-	return nil
-}
+func (x *ClientInfo) GetConnInfo() []byte { _ = "STUB: not implemented"; return nil }
 
-func (x *ClientInfo) GetChanInfo() []byte {
-	if x != nil {
-		return x.ChanInfo
-	}
-	return nil
-}
+func (x *ClientInfo) GetChanInfo() []byte { _ = "STUB: not implemented"; return nil }
 
 type Publication struct {
 	state         protoimpl.MessageState
@@ -369,65 +190,27 @@ type Publication struct {
 	Tags   map[string]string `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
-func (x *Publication) Reset() {
-	*x = Publication{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Publication) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Publication) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Publication) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Publication) ProtoMessage() {}
+func (*Publication) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Publication) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Publication.ProtoReflect.Descriptor instead.
-func (*Publication) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{4}
-}
+func (*Publication) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Publication) GetData() []byte {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
+func (x *Publication) GetData() []byte { _ = "STUB: not implemented"; return nil }
 
-func (x *Publication) GetInfo() *ClientInfo {
-	if x != nil {
-		return x.Info
-	}
-	return nil
-}
+func (x *Publication) GetInfo() *ClientInfo { _ = "STUB: not implemented"; return nil }
 
-func (x *Publication) GetOffset() uint64 {
-	if x != nil {
-		return x.Offset
-	}
-	return 0
-}
+func (x *Publication) GetOffset() uint64 { _ = "STUB: not implemented"; return 0 }
 
-func (x *Publication) GetTags() map[string]string {
-	if x != nil {
-		return x.Tags
-	}
-	return nil
-}
+func (x *Publication) GetTags() map[string]string { _ = "STUB: not implemented"; return nil }
 
 type Join struct {
 	state         protoimpl.MessageState
@@ -437,44 +220,21 @@ type Join struct {
 	Info *ClientInfo `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
 }
 
-func (x *Join) Reset() {
-	*x = Join{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Join) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Join) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Join) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Join) ProtoMessage() {}
+func (*Join) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Join) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Join.ProtoReflect.Descriptor instead.
-func (*Join) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{5}
-}
+func (*Join) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Join) GetInfo() *ClientInfo {
-	if x != nil {
-		return x.Info
-	}
-	return nil
-}
+func (x *Join) GetInfo() *ClientInfo { _ = "STUB: not implemented"; return nil }
 
 type Leave struct {
 	state         protoimpl.MessageState
@@ -484,44 +244,21 @@ type Leave struct {
 	Info *ClientInfo `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
 }
 
-func (x *Leave) Reset() {
-	*x = Leave{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Leave) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Leave) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Leave) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Leave) ProtoMessage() {}
+func (*Leave) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Leave) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Leave.ProtoReflect.Descriptor instead.
-func (*Leave) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{6}
-}
+func (*Leave) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Leave) GetInfo() *ClientInfo {
-	if x != nil {
-		return x.Info
-	}
-	return nil
-}
+func (x *Leave) GetInfo() *ClientInfo { _ = "STUB: not implemented"; return nil }
 
 type Unsubscribe struct {
 	state         protoimpl.MessageState
@@ -533,51 +270,23 @@ type Unsubscribe struct {
 	Reason string `protobuf:"bytes,3,opt,name=reason,proto3" json:"reason,omitempty"`
 }
 
-func (x *Unsubscribe) Reset() {
-	*x = Unsubscribe{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Unsubscribe) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Unsubscribe) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Unsubscribe) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Unsubscribe) ProtoMessage() {}
+func (*Unsubscribe) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Unsubscribe) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Unsubscribe.ProtoReflect.Descriptor instead.
-func (*Unsubscribe) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{7}
-}
+func (*Unsubscribe) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Unsubscribe) GetCode() uint32 {
-	if x != nil {
-		return x.Code
-	}
-	return 0
-}
+func (x *Unsubscribe) GetCode() uint32 { _ = "STUB: not implemented"; return 0 }
 
-func (x *Unsubscribe) GetReason() string {
-	if x != nil {
-		return x.Reason
-	}
-	return ""
-}
+func (x *Unsubscribe) GetReason() string { _ = "STUB: not implemented"; return "" }
 
 type Subscribe struct {
 	state         protoimpl.MessageState
@@ -592,72 +301,29 @@ type Subscribe struct {
 	Data       []byte `protobuf:"bytes,7,opt,name=data,proto3" json:"data,omitempty"`
 }
 
-func (x *Subscribe) Reset() {
-	*x = Subscribe{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[8]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Subscribe) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Subscribe) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Subscribe) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Subscribe) ProtoMessage() {}
+func (*Subscribe) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Subscribe) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[8]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Subscribe.ProtoReflect.Descriptor instead.
-func (*Subscribe) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{8}
-}
+func (*Subscribe) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Subscribe) GetRecoverable() bool {
-	if x != nil {
-		return x.Recoverable
-	}
-	return false
-}
+func (x *Subscribe) GetRecoverable() bool { _ = "STUB: not implemented"; return false }
 
-func (x *Subscribe) GetEpoch() string {
-	if x != nil {
-		return x.Epoch
-	}
-	return ""
-}
+func (x *Subscribe) GetEpoch() string { _ = "STUB: not implemented"; return "" }
 
-func (x *Subscribe) GetOffset() uint64 {
-	if x != nil {
-		return x.Offset
-	}
-	return 0
-}
+func (x *Subscribe) GetOffset() uint64 { _ = "STUB: not implemented"; return 0 }
 
-func (x *Subscribe) GetPositioned() bool {
-	if x != nil {
-		return x.Positioned
-	}
-	return false
-}
+func (x *Subscribe) GetPositioned() bool { _ = "STUB: not implemented"; return false }
 
-func (x *Subscribe) GetData() []byte {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
+func (x *Subscribe) GetData() []byte { _ = "STUB: not implemented"; return nil }
 
 type Message struct {
 	state         protoimpl.MessageState
@@ -667,44 +333,21 @@ type Message struct {
 	Data []byte `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
 }
 
-func (x *Message) Reset() {
-	*x = Message{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[9]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Message) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Message) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Message) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Message) ProtoMessage() {}
+func (*Message) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Message) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[9]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Message.ProtoReflect.Descriptor instead.
-func (*Message) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{9}
-}
+func (*Message) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Message) GetData() []byte {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
+func (x *Message) GetData() []byte { _ = "STUB: not implemented"; return nil }
 
 type Connect struct {
 	state         protoimpl.MessageState
@@ -723,107 +366,39 @@ type Connect struct {
 	Node    string                      `protobuf:"bytes,10,opt,name=node,proto3" json:"node,omitempty"`
 }
 
-func (x *Connect) Reset() {
-	*x = Connect{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[10]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Connect) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Connect) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Connect) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Connect) ProtoMessage() {}
+func (*Connect) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Connect) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[10]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Connect.ProtoReflect.Descriptor instead.
-func (*Connect) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{10}
-}
+func (*Connect) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Connect) GetClient() string {
-	if x != nil {
-		return x.Client
-	}
-	return ""
-}
+func (x *Connect) GetClient() string { _ = "STUB: not implemented"; return "" }
 
-func (x *Connect) GetVersion() string {
-	if x != nil {
-		return x.Version
-	}
-	return ""
-}
+func (x *Connect) GetVersion() string { _ = "STUB: not implemented"; return "" }
 
-func (x *Connect) GetData() []byte {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
+func (x *Connect) GetData() []byte { _ = "STUB: not implemented"; return nil }
 
-func (x *Connect) GetSubs() map[string]*SubscribeResult {
-	if x != nil {
-		return x.Subs
-	}
-	return nil
-}
+func (x *Connect) GetSubs() map[string]*SubscribeResult { _ = "STUB: not implemented"; return nil }
 
-func (x *Connect) GetExpires() bool {
-	if x != nil {
-		return x.Expires
-	}
-	return false
-}
+func (x *Connect) GetExpires() bool { _ = "STUB: not implemented"; return false }
 
-func (x *Connect) GetTtl() uint32 {
-	if x != nil {
-		return x.Ttl
-	}
-	return 0
-}
+func (x *Connect) GetTtl() uint32 { _ = "STUB: not implemented"; return 0 }
 
-func (x *Connect) GetPing() uint32 {
-	if x != nil {
-		return x.Ping
-	}
-	return 0
-}
+func (x *Connect) GetPing() uint32 { _ = "STUB: not implemented"; return 0 }
 
-func (x *Connect) GetPong() bool {
-	if x != nil {
-		return x.Pong
-	}
-	return false
-}
+func (x *Connect) GetPong() bool { _ = "STUB: not implemented"; return false }
 
-func (x *Connect) GetSession() string {
-	if x != nil {
-		return x.Session
-	}
-	return ""
-}
+func (x *Connect) GetSession() string { _ = "STUB: not implemented"; return "" }
 
-func (x *Connect) GetNode() string {
-	if x != nil {
-		return x.Node
-	}
-	return ""
-}
+func (x *Connect) GetNode() string { _ = "STUB: not implemented"; return "" }
 
 type Disconnect struct {
 	state         protoimpl.MessageState
@@ -835,58 +410,25 @@ type Disconnect struct {
 	Reconnect bool   `protobuf:"varint,3,opt,name=reconnect,proto3" json:"reconnect,omitempty"`
 }
 
-func (x *Disconnect) Reset() {
-	*x = Disconnect{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[11]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Disconnect) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Disconnect) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Disconnect) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Disconnect) ProtoMessage() {}
+func (*Disconnect) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Disconnect) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[11]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Disconnect.ProtoReflect.Descriptor instead.
-func (*Disconnect) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{11}
-}
+func (*Disconnect) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Disconnect) GetCode() uint32 {
-	if x != nil {
-		return x.Code
-	}
-	return 0
-}
+func (x *Disconnect) GetCode() uint32 { _ = "STUB: not implemented"; return 0 }
 
-func (x *Disconnect) GetReason() string {
-	if x != nil {
-		return x.Reason
-	}
-	return ""
-}
+func (x *Disconnect) GetReason() string { _ = "STUB: not implemented"; return "" }
 
-func (x *Disconnect) GetReconnect() bool {
-	if x != nil {
-		return x.Reconnect
-	}
-	return false
-}
+func (x *Disconnect) GetReconnect() bool { _ = "STUB: not implemented"; return false }
 
 type Refresh struct {
 	state         protoimpl.MessageState
@@ -897,51 +439,23 @@ type Refresh struct {
 	Ttl     uint32 `protobuf:"varint,2,opt,name=ttl,proto3" json:"ttl,omitempty"`
 }
 
-func (x *Refresh) Reset() {
-	*x = Refresh{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[12]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *Refresh) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *Refresh) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *Refresh) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*Refresh) ProtoMessage() {}
+func (*Refresh) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *Refresh) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[12]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use Refresh.ProtoReflect.Descriptor instead.
-func (*Refresh) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{12}
-}
+func (*Refresh) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *Refresh) GetExpires() bool {
-	if x != nil {
-		return x.Expires
-	}
-	return false
-}
+func (x *Refresh) GetExpires() bool { _ = "STUB: not implemented"; return false }
 
-func (x *Refresh) GetTtl() uint32 {
-	if x != nil {
-		return x.Ttl
-	}
-	return 0
-}
+func (x *Refresh) GetTtl() uint32 { _ = "STUB: not implemented"; return 0 }
 
 type SubscribeResult struct {
 	state         protoimpl.MessageState
@@ -961,107 +475,39 @@ type SubscribeResult struct {
 	WasRecovering bool           `protobuf:"varint,12,opt,name=was_recovering,json=wasRecovering,proto3" json:"was_recovering,omitempty"`
 }
 
-func (x *SubscribeResult) Reset() {
-	*x = SubscribeResult{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_uni_proto_msgTypes[13]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
+func (x *SubscribeResult) Reset() { _ = "STUB: not implemented"; return }
 
-func (x *SubscribeResult) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
+func (x *SubscribeResult) String() string { _ = "STUB: not implemented"; return "" }
 
-func (*SubscribeResult) ProtoMessage() {}
+func (*SubscribeResult) ProtoMessage() { _ = "STUB: not implemented"; return }
 
 func (x *SubscribeResult) ProtoReflect() protoreflect.Message {
-	mi := &file_uni_proto_msgTypes[13]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
+	_ = "STUB: not implemented"
+	return *new(protoreflect.Message)
 }
 
 // Deprecated: Use SubscribeResult.ProtoReflect.Descriptor instead.
-func (*SubscribeResult) Descriptor() ([]byte, []int) {
-	return file_uni_proto_rawDescGZIP(), []int{13}
-}
+func (*SubscribeResult) Descriptor() ([]byte, []int) { _ = "STUB: not implemented"; return nil, nil }
 
-func (x *SubscribeResult) GetExpires() bool {
-	if x != nil {
-		return x.Expires
-	}
-	return false
-}
+func (x *SubscribeResult) GetExpires() bool { _ = "STUB: not implemented"; return false }
 
-func (x *SubscribeResult) GetTtl() uint32 {
-	if x != nil {
-		return x.Ttl
-	}
-	return 0
-}
+func (x *SubscribeResult) GetTtl() uint32 { _ = "STUB: not implemented"; return 0 }
 
-func (x *SubscribeResult) GetRecoverable() bool {
-	if x != nil {
-		return x.Recoverable
-	}
-	return false
-}
+func (x *SubscribeResult) GetRecoverable() bool { _ = "STUB: not implemented"; return false }
 
-func (x *SubscribeResult) GetEpoch() string {
-	if x != nil {
-		return x.Epoch
-	}
-	return ""
-}
+func (x *SubscribeResult) GetEpoch() string { _ = "STUB: not implemented"; return "" }
 
-func (x *SubscribeResult) GetPublications() []*Publication {
-	if x != nil {
-		return x.Publications
-	}
-	return nil
-}
+func (x *SubscribeResult) GetPublications() []*Publication { _ = "STUB: not implemented"; return nil }
 
-func (x *SubscribeResult) GetRecovered() bool {
-	if x != nil {
-		return x.Recovered
-	}
-	return false
-}
+func (x *SubscribeResult) GetRecovered() bool { _ = "STUB: not implemented"; return false }
 
-func (x *SubscribeResult) GetOffset() uint64 {
-	if x != nil {
-		return x.Offset
-	}
-	return 0
-}
+func (x *SubscribeResult) GetOffset() uint64 { _ = "STUB: not implemented"; return 0 }
 
-func (x *SubscribeResult) GetPositioned() bool {
-	if x != nil {
-		return x.Positioned
-	}
-	return false
-}
+func (x *SubscribeResult) GetPositioned() bool { _ = "STUB: not implemented"; return false }
 
-func (x *SubscribeResult) GetData() []byte {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
+func (x *SubscribeResult) GetData() []byte { _ = "STUB: not implemented"; return nil }
 
-func (x *SubscribeResult) GetWasRecovering() bool {
-	if x != nil {
-		return x.WasRecovering
-	}
-	return false
-}
+func (x *SubscribeResult) GetWasRecovering() bool { _ = "STUB: not implemented"; return false }
 
 var File_uni_proto protoreflect.FileDescriptor
 
@@ -1223,12 +669,7 @@ var (
 	file_uni_proto_rawDescData = file_uni_proto_rawDesc
 )
 
-func file_uni_proto_rawDescGZIP() []byte {
-	file_uni_proto_rawDescOnce.Do(func() {
-		file_uni_proto_rawDescData = protoimpl.X.CompressGZIP(file_uni_proto_rawDescData)
-	})
-	return file_uni_proto_rawDescData
-}
+func file_uni_proto_rawDescGZIP() []byte { _ = "STUB: not implemented"; return nil }
 
 var file_uni_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_uni_proto_goTypes = []interface{}{
@@ -1278,197 +719,5 @@ var file_uni_proto_depIdxs = []int32{
 	0,  // [0:18] is the sub-list for field type_name
 }
 
-func init() { file_uni_proto_init() }
-func file_uni_proto_init() {
-	if File_uni_proto != nil {
-		return
-	}
-	if !protoimpl.UnsafeEnabled {
-		file_uni_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConnectRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SubscribeRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Push); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ClientInfo); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Publication); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Join); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Leave); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Unsubscribe); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Subscribe); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Message); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Connect); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Disconnect); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Refresh); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_uni_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SubscribeResult); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-	}
-	type x struct{}
-	out := protoimpl.TypeBuilder{
-		File: protoimpl.DescBuilder{
-			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_uni_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   17,
-			NumExtensions: 0,
-			NumServices:   1,
-		},
-		GoTypes:           file_uni_proto_goTypes,
-		DependencyIndexes: file_uni_proto_depIdxs,
-		MessageInfos:      file_uni_proto_msgTypes,
-	}.Build()
-	File_uni_proto = out.File
-	file_uni_proto_rawDesc = nil
-	file_uni_proto_goTypes = nil
-	file_uni_proto_depIdxs = nil
-}
+func init()                { file_uni_proto_init() }
+func file_uni_proto_init() { _ = "STUB: not implemented"; return }

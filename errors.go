@@ -1,8 +1,6 @@
 package centrifuge
 
 import (
-	"fmt"
-
 	"github.com/centrifugal/protocol"
 )
 
@@ -18,17 +16,9 @@ type Error struct {
 	Temporary bool
 }
 
-func (e *Error) toProto() *protocol.Error {
-	return &protocol.Error{
-		Code:      e.Code,
-		Message:   e.Message,
-		Temporary: e.Temporary,
-	}
-}
+func (e *Error) toProto() *protocol.Error { _ = "STUB: not implemented"; return nil }
 
-func (e *Error) Error() string {
-	return fmt.Sprintf("%d: %s", e.Code, e.Message)
-}
+func (e *Error) Error() string { _ = "STUB: not implemented"; return "" }
 
 // Here we define well-known errors that can be used in client protocol replies.
 var (

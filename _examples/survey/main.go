@@ -1,16 +1,10 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
 	"strconv"
-	"syscall"
 	"time"
 
 	_ "net/http/pprof"
@@ -22,30 +16,14 @@ var (
 	port = flag.Int("port", 8000, "Port to bind app to")
 )
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("[centrifuge] %s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 func authMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		ctx = centrifuge.SetCredentials(ctx, &centrifuge.Credentials{UserID: ""})
-		r = r.WithContext(ctx)
-		h.ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
-func waitExitSignal(n *centrifuge.Node) {
-	sigCh := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		_ = n.Shutdown(context.Background())
-		done <- true
-	}()
-	<-done
-}
+func waitExitSignal(n *centrifuge.Node) { _ = "STUB: not implemented"; return }
 
 const (
 	surveyInternalError  uint32 = 1
@@ -53,42 +31,13 @@ const (
 )
 
 func surveyChannels(node *centrifuge.Node) (map[string]int, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	results, err := node.Survey(ctx, "channels", nil, "")
-	if err != nil {
-		return nil, err
-	}
-	channels := map[string]int{}
-	for nodeID, result := range results {
-		if result.Code > 0 {
-			return nil, fmt.Errorf("non-zero code from node %s: %d", nodeID, result.Code)
-		}
-		var nodeChannels map[string]int
-		err := json.Unmarshal(result.Data, &nodeChannels)
-		if err != nil {
-			return nil, fmt.Errorf("error unmarshaling data from node %s: %v", nodeID, err)
-		}
-		for ch, numSubscribers := range nodeChannels {
-			channels[ch] += numSubscribers
-		}
-	}
-	return channels, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func respondChannelsSurvey(node *centrifuge.Node) centrifuge.SurveyReply {
-	channels := node.Hub().Channels()
-	channelsMap := make(map[string]int, len(channels))
-	for _, ch := range channels {
-		if numSubscribers := node.Hub().NumSubscribers(ch); numSubscribers > 0 {
-			channelsMap[ch] = numSubscribers
-		}
-	}
-	data, err := json.Marshal(channelsMap)
-	if err != nil {
-		return centrifuge.SurveyReply{Code: surveyInternalError}
-	}
-	return centrifuge.SurveyReply{Data: data}
+	_ = "STUB: not implemented"
+	return *new(centrifuge.SurveyReply)
 }
 
 func main() {

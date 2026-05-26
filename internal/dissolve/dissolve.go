@@ -1,10 +1,5 @@
 package dissolve
 
-import (
-	"errors"
-	"runtime"
-)
-
 // Dissolver allows to put function to in-memory queue and process
 // it with workers until success. The order of execution is not maintained.
 // Jobs will be lost after closing. Jobs not saved to persistent store so
@@ -18,49 +13,17 @@ type Dissolver struct {
 }
 
 // New creates new Dissolver.
-func New(numWorkers int) *Dissolver {
-	return &Dissolver{
-		queue:      newQueue(),
-		numWorkers: numWorkers,
-	}
-}
+func New(numWorkers int) *Dissolver { _ = "STUB: not implemented"; return nil }
 
 // Run launches workers to process Jobs from queue concurrently.
-func (d *Dissolver) Run() error {
-	for i := 0; i < d.numWorkers; i++ {
-		go d.runWorker()
-	}
-	return nil
-}
+func (d *Dissolver) Run() error { _ = "STUB: not implemented"; return nil }
 
 // Close stops processing Jobs, no more Jobs can be submitted after closing.
-func (d *Dissolver) Close() error {
-	d.queue.Close()
-	return nil
-}
+func (d *Dissolver) Close() error { _ = "STUB: not implemented"; return nil }
 
 // Submit Job to be reliably processed.
-func (d *Dissolver) Submit(job Job) error {
-	if !d.queue.Add(job) {
-		return errors.New("can not submit job to closed dissolver")
-	}
-	return nil
-}
+func (d *Dissolver) Submit(job Job) error { _ = "STUB: not implemented"; return nil }
 
-func (d *Dissolver) runWorker() {
-	for {
-		job, ok := d.queue.Wait()
-		if !ok {
-			if d.queue.Closed() {
-				break
-			}
-			continue
-		}
-		err := job()
-		if err != nil {
-			// Put to the end of queue.
-			runtime.Gosched()
-			d.queue.Add(job)
-		}
-	}
-}
+func (d *Dissolver) runWorker() { _ = "STUB: not implemented"; return }
+
+// Put to the end of queue.

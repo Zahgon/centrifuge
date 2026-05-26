@@ -38,25 +38,7 @@ var crc16tab = [256]uint16{
 
 // redisSlot computes the Redis Cluster hash slot for a key.
 // Handles hash tags: if key contains {tag}, only tag is hashed.
-func redisSlot(key string) uint16 {
-	if start := indexByte(key, '{'); start >= 0 {
-		if end := indexByte(key[start+1:], '}'); end > 0 {
-			key = key[start+1 : start+1+end]
-		}
-	}
-	var crc uint16
-	for i := 0; i < len(key); i++ {
-		crc = (crc << 8) ^ crc16tab[byte(crc>>8)^key[i]]
-	}
-	return crc & 0x3FFF
-}
+func redisSlot(key string) uint16 { _ = "STUB: not implemented"; return 0 }
 
 // indexByte returns the index of the first instance of c in s, or -1.
-func indexByte(s string, c byte) int {
-	for i := 0; i < len(s); i++ {
-		if s[i] == c {
-			return i
-		}
-	}
-	return -1
-}
+func indexByte(s string, c byte) int { _ = "STUB: not implemented"; return 0 }

@@ -2,10 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"log"
-	"math/rand"
-	"time"
 
 	"github.com/centrifugal/centrifuge"
 )
@@ -80,221 +76,50 @@ var awayPlayers = map[string][]string{
 	"Feyenoord":   {"Gimenez", "Stengs", "Timber", "Kokcu", "Dilrosun"},
 }
 
-func newMatch(id, home, away string) *matchSim {
-	m := &matchSim{
-		id:       id,
-		homeTeam: home,
-		awayTeam: away,
-	}
-	m.reset()
-	return m
-}
+func newMatch(id, home, away string) *matchSim { _ = "STUB: not implemented"; return nil }
 
-func (m *matchSim) reset() {
-	m.data = MatchData{
-		MatchID:   m.id,
-		HomeTeam:  m.homeTeam,
-		AwayTeam:  m.awayTeam,
-		HomePoss:  50,
-		Status:    "1H",
-		Events:    []MatchEvent{},
-		UpdatedAt: time.Now().UnixMilli(),
-	}
-}
+func (m *matchSim) reset() { _ = "STUB: not implemented"; return }
 
-func (m *matchSim) randomPlayer(team string) string {
-	var players []string
-	if team == "home" {
-		players = homePlayers[m.homeTeam]
-	} else {
-		players = awayPlayers[m.awayTeam]
-	}
-	if len(players) == 0 {
-		return "Unknown"
-	}
-	return players[rand.Intn(len(players))]
-}
+func (m *matchSim) randomPlayer(team string) string { _ = "STUB: not implemented"; return "" }
 
-func (m *matchSim) addEvent(evt MatchEvent) {
-	m.data.Events = append(m.data.Events, evt)
-	// Keep only last 8 events.
-	if len(m.data.Events) > 8 {
-		m.data.Events = m.data.Events[len(m.data.Events)-8:]
-	}
-}
+func (m *matchSim) addEvent(evt MatchEvent) { _ = "STUB: not implemented"; return }
+
+// Keep only last 8 events.
 
 // tick advances the match by ~2 minutes of match time.
-func (m *matchSim) tick() {
-	d := &m.data
+func (m *matchSim) tick() { _ = "STUB: not implemented"; return }
 
-	switch d.Status {
-	case "HT", "FT":
-		return
-	}
+// Transition to half-time or full-time.
 
-	d.Minute += 2
-	d.UpdatedAt = time.Now().UnixMilli()
+// Pick which team gets action this tick.
 
-	// Transition to half-time or full-time.
-	if d.Minute >= 45 && d.Status == "1H" {
-		d.Status = "HT"
-		d.Minute = 45
-		return
-	}
-	if d.Minute >= 90 && d.Status == "2H" {
-		d.Status = "FT"
-		d.Minute = 90
-		return
-	}
+// Possession drift: small random walk.
 
-	// Pick which team gets action this tick.
-	team := "home"
-	if rand.Intn(100) >= d.HomePoss {
-		team = "away"
-	}
+// Passes (always increment both sides).
 
-	// Possession drift: small random walk.
-	d.HomePoss += rand.Intn(5) - 2
-	if d.HomePoss < 30 {
-		d.HomePoss = 30
-	}
-	if d.HomePoss > 70 {
-		d.HomePoss = 70
-	}
+// Shots (~20% chance per tick).
 
-	// Passes (always increment both sides).
-	d.HomePasses += 8 + rand.Intn(12)
-	d.AwayPasses += 8 + rand.Intn(12)
+// Goal (~3% chance per tick — roughly 2-3 goals per match).
 
-	// Shots (~20% chance per tick).
-	if rand.Intn(100) < 20 {
-		if team == "home" {
-			d.HomeShots++
-		} else {
-			d.AwayShots++
-		}
-	}
+// Corner (~8% chance).
 
-	// Goal (~3% chance per tick — roughly 2-3 goals per match).
-	if rand.Intn(100) < 3 {
-		player := m.randomPlayer(team)
-		if team == "home" {
-			d.HomeScore++
-		} else {
-			d.AwayScore++
-		}
-		m.addEvent(MatchEvent{Minute: d.Minute, Type: "goal", Team: team, Player: player})
-	}
+// Foul (~10% chance, fouling team is the opponent).
 
-	// Corner (~8% chance).
-	if rand.Intn(100) < 8 {
-		if team == "home" {
-			d.HomeCorners++
-		} else {
-			d.AwayCorners++
-		}
-		m.addEvent(MatchEvent{Minute: d.Minute, Type: "corner", Team: team, Player: m.randomPlayer(team)})
-	}
+// Yellow card on ~40% of fouls.
 
-	// Foul (~10% chance, fouling team is the opponent).
-	if rand.Intn(100) < 10 {
-		fouler := "away"
-		if team == "away" {
-			fouler = "home"
-		}
-		if fouler == "home" {
-			d.HomeFouls++
-		} else {
-			d.AwayFouls++
-		}
-
-		// Yellow card on ~40% of fouls.
-		if rand.Intn(100) < 40 {
-			player := m.randomPlayer(fouler)
-			if fouler == "home" {
-				d.HomeYellow++
-			} else {
-				d.AwayYellow++
-			}
-			m.addEvent(MatchEvent{Minute: d.Minute, Type: "yellow", Team: fouler, Player: player})
-		}
-	}
-
-	// Red card (~0.5% chance — rare.
-	if rand.Intn(1000) < 5 {
-		player := m.randomPlayer(team)
-		if team == "home" {
-			d.HomeRed++
-		} else {
-			d.AwayRed++
-		}
-		m.addEvent(MatchEvent{Minute: d.Minute, Type: "red", Team: team, Player: player})
-	}
-}
+// Red card (~0.5% chance — rare.
 
 func publishScoreboardData(ctx context.Context, node *centrifuge.Node) {
-	matches := make([]*matchSim, len(matchConfigs))
-	for i, cfg := range matchConfigs {
-		matches[i] = newMatch(cfg.id, cfg.home, cfg.away)
-	}
-
-	// Stagger initial minutes so matches aren't all in sync.
-	matches[0].data.Minute = 0
-	matches[1].data.Minute = 10
-	matches[2].data.Minute = 20
-	matches[3].data.Minute = 30
-	matches[4].data.Minute = 40
-	matches[5].data.Minute = 5
-
-	tc := time.NewTicker(1 * time.Second)
-	defer tc.Stop()
-
-	// Track pause timers for HT/FT per match.
-	pauseUntil := make([]time.Time, len(matches))
-
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		case now := <-tc.C:
-			for i, m := range matches {
-				// Handle paused states.
-				if !pauseUntil[i].IsZero() && now.Before(pauseUntil[i]) {
-					continue
-				}
-				pauseUntil[i] = time.Time{}
-
-				switch m.data.Status {
-				case "HT":
-					// Resume into second half after 5s pause.
-					m.data.Status = "2H"
-					pauseUntil[i] = now.Add(5 * time.Second)
-					continue
-				case "FT":
-					// Restart match after 10s pause.
-					m.reset()
-					pauseUntil[i] = now.Add(2 * time.Second)
-					continue
-				}
-
-				m.tick()
-
-				jsonData, err := json.Marshal(m.data)
-				if err != nil {
-					log.Printf("Failed to marshal match %s: %v", m.id, err)
-					continue
-				}
-				_, err = node.MapPublish(ctx, "scoreboard", m.id, centrifuge.MapPublishOptions{
-					Data:     jsonData,
-					UseDelta: true,
-				})
-				if err != nil {
-					if ctx.Err() != nil {
-						return
-					}
-					log.Printf("Failed to publish match %s: %v", m.id, err)
-				}
-			}
-		}
-	}
+	_ = "STUB: not implemented"
+	return
 }
+
+// Stagger initial minutes so matches aren't all in sync.
+
+// Track pause timers for HT/FT per match.
+
+// Handle paused states.
+
+// Resume into second half after 5s pause.
+
+// Restart match after 10s pause.

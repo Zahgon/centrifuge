@@ -13,11 +13,10 @@ var _ Encoder = (*ProtobufEncoder)(nil)
 type ProtobufEncoder struct{}
 
 // NewProtobufEncoder ...
-func NewProtobufEncoder() *ProtobufEncoder {
-	return &ProtobufEncoder{}
-}
+func NewProtobufEncoder() *ProtobufEncoder { _ = "STUB: not implemented"; return nil }
 
 // EncodeCommand ...
 func (e *ProtobufEncoder) EncodeCommand(cmd *controlpb.Command) ([]byte, error) {
-	return cmd.MarshalVT()
+	_ = "STUB: not implemented"
+	return nil, nil
 }

@@ -5,11 +5,8 @@ import (
 	"flag"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
 	"strconv"
 	"sync"
-	"syscall"
 	"time"
 
 	_ "net/http/pprof"
@@ -25,32 +22,14 @@ var (
 	certFile = flag.String("cert_file", "server.crt", "path to TLS crt file")
 )
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("%s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 func authMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		newCtx := centrifuge.SetCredentials(ctx, &centrifuge.Credentials{
-			UserID: "42",
-		})
-		r = r.WithContext(newCtx)
-		h.ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
-func waitExitSignal(n *centrifuge.Node) {
-	sigCh := make(chan os.Signal, 1)
-	done := make(chan bool, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		_ = n.Shutdown(context.Background())
-		done <- true
-	}()
-	<-done
-}
+func waitExitSignal(n *centrifuge.Node) { _ = "STUB: not implemented"; return }
 
 var exampleChannel = "unidirectional"
 
@@ -159,115 +138,20 @@ func main() {
 }
 
 func handleStream(node *centrifuge.Node) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-		w.Header().Set("Connection", "keep-alive")
-		w.WriteHeader(http.StatusOK)
-
-		ack := make(chan struct{})
-		transport := newStreamTransport(req, ack)
-
-		c, closeFn, err := centrifuge.NewClient(req.Context(), node, transport)
-		if err != nil {
-			log.Printf("error creating client: %v", err)
-			return
-		}
-		defer func() { _ = closeFn() }()
-		defer close(transport.closedCh) // need to execute this after client closeFn.
-
-		c.Connect(centrifuge.ConnectRequest{})
-
-		_, ok := w.(http.Flusher)
-		if !ok {
-			return
-		}
-		rc := http.NewResponseController(w)
-
-		pingInterval := 25 * time.Second
-		tick := time.NewTicker(pingInterval)
-		defer tick.Stop()
-
-		sendAck := func() {
-			select {
-			case ack <- struct{}{}:
-			case <-req.Context().Done():
-			}
-		}
-
-		for {
-			select {
-			case <-req.Context().Done():
-				return
-			case <-transport.disconnectCh:
-				return
-			case <-tick.C:
-				_ = rc.SetWriteDeadline(time.Now().Add(10 * time.Second))
-				_, err = w.Write([]byte("null\n"))
-				if err != nil {
-					log.Printf("error write: %v", err)
-					return
-				}
-				_ = rc.Flush()
-			case data, ok := <-transport.messages:
-				if !ok {
-					sendAck()
-					return
-				}
-				tick.Reset(pingInterval)
-				_ = rc.SetWriteDeadline(time.Now().Add(10 * time.Second))
-				_, err = w.Write(data)
-				if err != nil {
-					log.Printf("error write: %v", err)
-					sendAck()
-					return
-				}
-				_, err = w.Write([]byte("\n"))
-				if err != nil {
-					log.Printf("error write: %v", err)
-					sendAck()
-					return
-				}
-				_ = rc.Flush()
-				sendAck()
-			}
-		}
-	}
+	_ = "STUB: not implemented"
+	return *new(http.HandlerFunc)
 }
 
+// need to execute this after client closeFn.
+
 func handleSubscribe(node *centrifuge.Node) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		clientID := req.URL.Query().Get("client")
-		if clientID == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		err := node.Subscribe(
-			"42", exampleChannel,
-			centrifuge.WithSubscribeClient(clientID),
-			centrifuge.WithSubscribeData([]byte(`{"message": "welcome to a channel"}`)),
-		)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-	}
+	_ = "STUB: not implemented"
+	return *new(http.HandlerFunc)
 }
 
 func handleUnsubscribe(node *centrifuge.Node) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		clientID := req.URL.Query().Get("client")
-		if clientID == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		err := node.Unsubscribe("42", exampleChannel, centrifuge.WithUnsubscribeClient(clientID))
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-	}
+	_ = "STUB: not implemented"
+	return *new(http.HandlerFunc)
 }
 
 type streamTransport struct {
@@ -281,88 +165,60 @@ type streamTransport struct {
 }
 
 func newStreamTransport(req *http.Request, ack chan struct{}) *streamTransport {
-	return &streamTransport{
-		messages:     make(chan []byte),
-		disconnectCh: make(chan *centrifuge.Disconnect),
-		closedCh:     make(chan struct{}),
-		req:          req,
-		ack:          ack,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (t *streamTransport) Name() string {
-	return "http_stream"
-}
+func (t *streamTransport) Name() string { _ = "STUB: not implemented"; return "" }
 
-func (t *streamTransport) AcceptProtocol() string {
-	return ""
-}
+func (t *streamTransport) AcceptProtocol() string { _ = "STUB: not implemented"; return "" }
 
 func (t *streamTransport) Protocol() centrifuge.ProtocolType {
-	return centrifuge.ProtocolTypeJSON
+	_ = "STUB: not implemented"
+	return *new(centrifuge.ProtocolType)
 }
 
 // ProtocolVersion ...
 func (t *streamTransport) ProtocolVersion() centrifuge.ProtocolVersion {
-	return centrifuge.ProtocolVersion2
+	_ = "STUB: not implemented"
+	return *new(centrifuge.ProtocolVersion)
 }
 
 // Unidirectional returns whether transport is unidirectional.
 func (t *streamTransport) Unidirectional() bool {
-	return true
-}
+	_ = "STUB: not implemented"
 
-// Emulation ...
-func (t *streamTransport) Emulation() bool {
+	// Emulation ...
 	return false
 }
 
-// DisabledPushFlags ...
+func (t *streamTransport) Emulation() bool {
+	_ = "STUB: not implemented"
+
+	// DisabledPushFlags ...
+	return false
+}
+
 func (t *streamTransport) DisabledPushFlags() uint64 {
+	_ = "STUB: not implemented"
+
+	// PingPongConfig ...
 	return 0
 }
 
-// PingPongConfig ...
 func (t *streamTransport) PingPongConfig() centrifuge.PingPongConfig {
-	return centrifuge.PingPongConfig{
-		PingInterval: 25 * time.Second,
-		PongTimeout:  10 * time.Second,
-	}
+	_ = "STUB: not implemented"
+	return *new(centrifuge.PingPongConfig)
 }
 
-func (t *streamTransport) Write(message []byte) error {
-	return t.WriteMany(message)
-}
+func (t *streamTransport) Write(message []byte) error { _ = "STUB: not implemented"; return nil }
 
 func (t *streamTransport) WriteMany(messages ...[]byte) error {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	if t.closed {
-		return nil
-	}
-	for i := 0; i < len(messages); i++ {
-		select {
-		case t.messages <- messages[i]:
-		case <-t.closedCh:
-			return nil
-		}
-		select {
-		case <-t.ack:
-		case <-t.closedCh:
-			return nil
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func (t *streamTransport) Close(_ centrifuge.Disconnect) error {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	if t.closed {
-		return nil
-	}
-	t.closed = true
-	close(t.disconnectCh)
-	<-t.closedCh
+	_ = "STUB: not implemented"
 	return nil
 }

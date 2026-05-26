@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -21,9 +20,7 @@ type clientMessage struct {
 	Input     string `json:"input"`
 }
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("%s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 type connectData struct {
 	Email string `json:"email"`
@@ -38,56 +35,26 @@ var ginContextKey contextKey
 // create a gin middleware to add its context to the context.Context used by
 // centrifuge websocket server.
 func GinContextToContextMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		ctx := context.WithValue(c.Request.Context(), ginContextKey, c)
-		c.Request = c.Request.WithContext(ctx)
-		c.Next()
-	}
+	_ = "STUB: not implemented"
+	return *new(gin.HandlerFunc)
 }
 
 // GinContextFromContext - we recover the gin context from the context.Context
 // struct where we added it just above
 func GinContextFromContext(ctx context.Context) (*gin.Context, error) {
-	ginContext := ctx.Value(ginContextKey)
-	if ginContext == nil {
-		err := fmt.Errorf("could not retrieve gin.Context")
-		return nil, err
-	}
-	gc, ok := ginContext.(*gin.Context)
-	if !ok {
-		err := fmt.Errorf("gin.Context has wrong type")
-		return nil, err
-	}
-	return gc, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Finally we can use gin context in the auth middleware of centrifuge.
 func authMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		// We get gin ctx from context.Context struct.
-		gc, err := GinContextFromContext(ctx)
-		if err != nil {
-			fmt.Printf("Failed to retrieve gin context")
-			fmt.Print(err.Error())
-			return
-		}
-		// And now we can access gin session.
-		s := sessions.Default(gc)
-		username := s.Get("user").(string)
-		if username != "" {
-			fmt.Printf("Successful websocket auth for user %s\n", username)
-		} else {
-			fmt.Printf("Failed websocket auth for user %s\n", username)
-			return
-		}
-		newCtx := centrifuge.SetCredentials(ctx, &centrifuge.Credentials{
-			UserID: s.Get("user").(string),
-		})
-		r = r.WithContext(newCtx)
-		h.ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
+
+// We get gin ctx from context.Context struct.
+
+// And now we can access gin session.
 
 func main() {
 	node, _ := centrifuge.New(centrifuge.Config{

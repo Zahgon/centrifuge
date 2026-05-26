@@ -22,13 +22,13 @@ const (
 )
 
 // IsEphemeral returns true for MapModeEphemeral.
-func (m MapMode) IsEphemeral() bool { return m == MapModeEphemeral }
+func (m MapMode) IsEphemeral() bool { _ = "STUB: not implemented"; return false }
 
 // HasStream returns true for modes that maintain a recovery stream (Recoverable, Persistent).
-func (m MapMode) HasStream() bool { return m == MapModeRecoverable || m == MapModePersistent }
+func (m MapMode) HasStream() bool { _ = "STUB: not implemented"; return false }
 
 // HasExpiry returns true for modes where entries expire via TTL (Ephemeral, Recoverable).
-func (m MapMode) HasExpiry() bool { return m == MapModeEphemeral || m == MapModeRecoverable }
+func (m MapMode) HasExpiry() bool { _ = "STUB: not implemented"; return false }
 
 // MapChannelOptions contains configuration for map channels. Every map channel
 // must have Mode explicitly set — zero value is an error.
@@ -329,14 +329,11 @@ type SharedPollChannelOptions struct {
 	PublishEnabled bool
 }
 
-func (o SharedPollChannelOptions) isVersionless() bool {
-	return o.Mode == "" || o.Mode == SharedPollModeVersionless
-}
+func (o SharedPollChannelOptions) isVersionless() bool { _ = "STUB: not implemented"; return false }
 
 func (o SharedPollChannelOptions) toKeyedChannelOptions() keyedChannelOptions {
-	return keyedChannelOptions{
-		MaxTrackedPerConnection: o.MaxKeysPerConnection,
-	}
+	_ = "STUB: not implemented"
+	return *new(keyedChannelOptions)
 }
 
 const (
@@ -476,32 +473,11 @@ var (
 )
 
 func getPingPongPeriodValues(config PingPongConfig) (time.Duration, time.Duration) {
-	pingInterval := config.PingInterval
-	if pingInterval < 0 {
-		pingInterval = 0
-	} else if pingInterval == 0 {
-		pingInterval = defaultPingInterval
-	}
-	pongTimeout := config.PongTimeout
-	if pongTimeout < 0 {
-		pongTimeout = 0
-	} else if pongTimeout == 0 {
-		pongTimeout = defaultPongTimeout
-	}
-	return pingInterval, pongTimeout
+	_ = "STUB: not implemented"
+	return *new(time.Duration), *new(time.Duration)
 }
 
 func warnAboutIncorrectPingPongConfig(node *Node, config PingPongConfig, transportName string) {
-	pingInterval, pongTimeout := getPingPongPeriodValues(config)
-	if pingInterval > 0 && pongTimeout > 0 && pongTimeout >= pingInterval {
-		node.logger.log(newLogEntry(
-			LogLevelWarn,
-			"ping interval must be greater than pong timeout to work properly",
-			map[string]any{
-				"transport":     transportName,
-				"ping_interval": pingInterval.String(),
-				"pong_timeout":  pongTimeout.String(),
-			},
-		))
-	}
+	_ = "STUB: not implemented"
+	return
 }

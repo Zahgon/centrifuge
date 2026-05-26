@@ -2,8 +2,6 @@ package memstream
 
 import (
 	"container/list"
-
-	"github.com/centrifugal/centrifuge/internal/epoch"
 )
 
 // Item to be kept inside stream.
@@ -31,133 +29,37 @@ type Stream struct {
 }
 
 // New creates new Stream.
-func New() *Stream {
-	return &Stream{
-		list:  list.New(),
-		index: make(map[uint64]*list.Element),
-		epoch: epoch.Generate(),
-	}
-}
+func New() *Stream { _ = "STUB: not implemented"; return nil }
 
 // Add item to stream.
 func (s *Stream) Add(v any, size int, version uint64, versionEpoch string) (uint64, error) {
-	s.top++
-	item := Item{
-		Offset: s.top,
-		Value:  v,
-	}
-	el := s.list.PushBack(item)
-	s.index[item.Offset] = el
-	for s.list.Len() > size {
-		el := s.list.Front()
-		item := el.Value.(Item)
-		s.list.Remove(el)
-		delete(s.index, item.Offset)
-	}
-	s.version = AppVersion{
-		Version: version,
-		Epoch:   versionEpoch,
-	}
-	return s.top, nil
+	_ = "STUB: not implemented"
+	return 0, nil
 }
 
 // Top returns top of stream.
 func (s *Stream) Top() uint64 {
-	return s.top
+	_ = "STUB: not implemented"
+
+	// Epoch returns epoch of stream.
+	return 0
 }
 
-// Epoch returns epoch of stream.
-func (s *Stream) Epoch() string {
-	return s.epoch
-}
+func (s *Stream) Epoch() string { _ = "STUB: not implemented"; return "" }
 
-func (s *Stream) TopVersion() uint64 {
-	return s.version.Version
-}
+func (s *Stream) TopVersion() uint64 { _ = "STUB: not implemented"; return 0 }
 
-func (s *Stream) TopVersionEpoch() string {
-	return s.version.Epoch
-}
+func (s *Stream) TopVersionEpoch() string { _ = "STUB: not implemented"; return "" }
 
 // Reset stream.
-func (s *Stream) Reset() {
-	s.top = 0
-	s.epoch = epoch.Generate()
-	s.Clear()
-}
+func (s *Stream) Reset() { _ = "STUB: not implemented"; return }
 
 // Clear stream data.
-func (s *Stream) Clear() {
-	s.list = list.New()
-	s.index = make(map[uint64]*list.Element)
-}
+func (s *Stream) Clear() { _ = "STUB: not implemented"; return }
 
 // Get items since provided position.
 // If seq is zero then elements since current first element in stream will be returned.
 func (s *Stream) Get(offset uint64, useOffset bool, limit int, reverse bool) ([]Item, uint64, error) {
-	if useOffset && offset >= s.top+1 {
-		return nil, s.top, nil
-	}
-
-	var el *list.Element
-	if useOffset {
-		var ok bool
-		el, ok = s.index[offset]
-		if !ok {
-			if reverse {
-				el = nil
-			} else {
-				el = s.list.Front()
-			}
-		}
-	} else {
-		if reverse {
-			el = s.list.Back()
-		} else {
-			el = s.list.Front()
-		}
-	}
-
-	if el == nil || limit == 0 {
-		return nil, s.top, nil
-	}
-
-	var resultCap int
-	if limit > 0 {
-		resultCap = limit
-		if resultCap > s.list.Len() {
-			resultCap = s.list.Len()
-		}
-	} else {
-		resultCap = s.list.Len()
-	}
-
-	result := make([]Item, 0, resultCap)
-
-	if reverse {
-		item := el.Value.(Item)
-		result = append(result, item)
-		i := 1
-		for e := el.Prev(); e != nil; e = e.Prev() {
-			if limit >= 0 && i >= limit {
-				break
-			}
-			i++
-			item := e.Value.(Item)
-			result = append(result, item)
-		}
-	} else {
-		item := el.Value.(Item)
-		result = append(result, item)
-		i := 1
-		for e := el.Next(); e != nil; e = e.Next() {
-			if limit >= 0 && i >= limit {
-				break
-			}
-			i++
-			item := e.Value.(Item)
-			result = append(result, item)
-		}
-	}
-	return result, s.top, nil
+	_ = "STUB: not implemented"
+	return nil, 0, nil
 }

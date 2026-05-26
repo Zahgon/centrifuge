@@ -68,17 +68,4 @@ func main() {
 	log.Println("done")
 }
 
-func generateTraffic(node *centrifuge.Node) {
-	t := time.NewTicker(100 * time.Millisecond)
-	defer t.Stop()
-	for range t.C {
-		if _, err := node.Publish("test:channel", []byte(`{"hello":"world"}`)); err != nil {
-			log.Printf("publish error: %v", err)
-		}
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-		if _, err := node.Survey(ctx, "ping", nil, ""); err != nil {
-			log.Printf("survey error: %v", err)
-		}
-		cancel()
-	}
-}
+func generateTraffic(node *centrifuge.Node) { _ = "STUB: not implemented"; return }

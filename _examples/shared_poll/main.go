@@ -2,17 +2,12 @@ package main
 
 import (
 	"context"
-	"crypto/hmac"
-	"crypto/sha256"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
-	"sort"
-	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -76,75 +71,23 @@ var (
 // colon-free by construction; role here is constrained to {"admin","viewer"}
 // so it's safe to keep in the outer string.
 func makeSignature(ch string, keys []string, role string, ttl int) string {
-	now := time.Now().Unix()
-	expireAt := now + int64(ttl)
-	sorted := make([]string, len(keys))
-	copy(sorted, keys)
-	sort.Strings(sorted)
-	keysHash := sha256.Sum256([]byte(strings.Join(sorted, "\x00")))
-	payload := fmt.Sprintf("%d\x00%d\x00%s\x00%s\x00%x", now, expireAt, role, ch, keysHash)
-	mac := hmac.New(sha256.New, []byte(signatureSecret))
-	mac.Write([]byte(payload))
-	return fmt.Sprintf("%d:%d:%s:%x", now, expireAt, role, mac.Sum(nil))
+	_ = "STUB: not implemented"
+	return ""
 }
 
 // verifySignature checks the HMAC signature and returns the embedded role and expireAt.
 func verifySignature(sig, ch string, keys []string) (role string, expireAt int64, err error) {
-	parts := strings.SplitN(sig, ":", 4)
-	if len(parts) != 4 {
-		return "", 0, errors.New("invalid signature format")
-	}
-	issuedAt, err := strconv.ParseInt(parts[0], 10, 64)
-	if err != nil {
-		return "", 0, errors.New("invalid issued_at")
-	}
-	expireAt, err = strconv.ParseInt(parts[1], 10, 64)
-	if err != nil {
-		return "", 0, errors.New("invalid expire_at")
-	}
-	role = parts[2]
-	macHex := parts[3]
-
-	if time.Now().Unix() > expireAt {
-		return "", 0, errors.New("signature expired")
-	}
-
-	// Reconstruct the expected HMAC from the claimed parameters. Must mirror
-	// the NUL-separated payload built in makeSignature.
-	sorted := make([]string, len(keys))
-	copy(sorted, keys)
-	sort.Strings(sorted)
-	keysHash := sha256.Sum256([]byte(strings.Join(sorted, "\x00")))
-	payload := fmt.Sprintf("%d\x00%d\x00%s\x00%s\x00%x", issuedAt, expireAt, role, ch, keysHash)
-	mac := hmac.New(sha256.New, []byte(signatureSecret))
-	mac.Write([]byte(payload))
-	expectedMAC := fmt.Sprintf("%x", mac.Sum(nil))
-
-	if !hmac.Equal([]byte(macHex), []byte(expectedMAC)) {
-		return "", 0, errors.New("HMAC mismatch")
-	}
-
-	return role, expireAt, nil
+	_ = "STUB: not implemented"
+	return "", 0, nil
 }
+
+// Reconstruct the expected HMAC from the claimed parameters. Must mirror
+// the NUL-separated payload built in makeSignature.
 
 // flagsForRole returns a copy of flags visible to the given role.
-func flagsForRole(role string) []Flag {
-	flagsMu.RLock()
-	defer flagsMu.RUnlock()
-	var result []Flag
-	for _, key := range flagOrder {
-		f := flags[key]
-		if f.AdminOnly && role != "admin" {
-			continue
-		}
-		result = append(result, *f)
-	}
-	return result
-}
+func flagsForRole(role string) []Flag { _ = "STUB: not implemented"; return nil }
 
-func handleLog(e centrifuge.LogEntry) {
-	log.Printf("[centrifuge] %s: %v", e.Message, e.Fields)
-}
+func handleLog(e centrifuge.LogEntry) { _ = "STUB: not implemented"; return }
 
 // authMiddleware reads role from query parameter and sets Centrifuge credentials.
 //
@@ -152,18 +95,8 @@ func handleLog(e centrifuge.LogEntry) {
 // session cookie, or OAuth — NOT via a query parameter. The role must come from
 // a trusted source (your auth system), never from client-provided input.
 func authMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		role := r.URL.Query().Get("role")
-		if role != "admin" {
-			role = "viewer"
-		}
-		ctx := centrifuge.SetCredentials(r.Context(), &centrifuge.Credentials{
-			UserID: fmt.Sprintf("%s_%d", role, time.Now().UnixNano()%100000),
-			Info:   []byte(fmt.Sprintf(`{"role":"%s"}`, role)),
-		})
-		r = r.WithContext(ctx)
-		h.ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
 func main() {
